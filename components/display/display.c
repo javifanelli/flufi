@@ -314,17 +314,18 @@ int display_text_height(const char *texto, int escala)
     return (renglones * (FONT_ALTO + SEPARACION_RENGLON) - SEPARACION_RENGLON) * escala;
 }
 
-static void dibujar_texto(int x, int y, const char *texto, int escala, color_t color, bool centrado)
+// centro_x < 0: el texto empieza en x. Si no, cada renglon se centra en centro_x.
+static void dibujar_texto(int x, int y, const char *texto, int escala, color_t color, int centro_x)
 {
     const char *p = texto;
     int alto_renglon = (FONT_ALTO + SEPARACION_RENGLON) * escala;
-    int cx = centrado ? (LCD_H_RES - ancho_renglon(p, escala)) / 2 : x;
+    int cx = (centro_x >= 0) ? centro_x - ancho_renglon(p, escala) / 2 : x;
     int c;
 
     while ((c = proximo_caracter(&p)) != 0) {
         if (c == '\n') {
             y += alto_renglon;
-            cx = centrado ? (LCD_H_RES - ancho_renglon(p, escala)) / 2 : x;
+            cx = (centro_x >= 0) ? centro_x - ancho_renglon(p, escala) / 2 : x;
             continue;
         }
         dibujar_caracter(cx, y, c, escala, color);
@@ -334,11 +335,17 @@ static void dibujar_texto(int x, int y, const char *texto, int escala, color_t c
 
 void display_draw_text(int x, int y, const char *texto, int escala, color_t color)
 {
-    dibujar_texto(x, y, texto, escala, color, false);
+    dibujar_texto(x, y, texto, escala, color, -1);
 }
 
 void display_draw_text_centered(const char *texto, int y, int escala, color_t color)
 {
     if (y < 0) y = (LCD_V_RES - display_text_height(texto, escala)) / 2;
-    dibujar_texto(0, y, texto, escala, color, true);
+    dibujar_texto(0, y, texto, escala, color, LCD_H_RES / 2);
+}
+
+void display_draw_text_centered_at(const char *texto, int centro_x, int y, int escala, color_t color)
+{
+    if (y < 0) y = (LCD_V_RES - display_text_height(texto, escala)) / 2;
+    dibujar_texto(0, y, texto, escala, color, centro_x);
 }

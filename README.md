@@ -1,17 +1,22 @@
 # 🩷 Flufi
 
 **Flufi es la compañera de Pitri.** Tiene una carita en una pantalla a color, con ojitos
-que parpadean y pestañas.
+que parpadean, pestañas, **rulos rubios** y **labios rojos de diva** 💋.
 
 La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 
 ```
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   ← rulos rubios
+  @@  @@  @@  @@  @@  @@  @@  @@  @@  @@
         \ | /            \ | /
          \|/              \|/
        ████████        ████████
        ████████        ████████      ← los ojitos de Flufi, con pestañas
        ████████        ████████
        ████████        ████████
+
+                  ▄▀▄▀▄
+                  ▀███▀             ← labios rojos de diva
 ```
 
 ---
@@ -21,13 +26,14 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | Cuando… | Flufi… |
 |---|---|
 | Se prende | Dice **"¡Hola Sofi!"** y **"Soy Flufi"**, bien grande |
-| Se esta conectando al WiFi | Abajo de sus ojitos aparecen unas **ondas** que se encienden de a una |
+| Se esta conectando al WiFi | Su cara se aleja y al costado aparecen unas **ondas** que se encienden de a una |
 | Se conecta | Dice **"Tengo wifi!"** |
 | Sabe la hora | Saluda segun el momento del dia: **"¡Buen dia!"**, **"¡Buenas tardes!"** o **"¡Buenas noches!"** |
 | Termina de arrancar | Saluda: se sorprende y se pone contenta, con el LED en **arco iris** 🌈 |
 | Esta tranquila | Juega con sus emociones, y el **LED de la placa** se prende del color de cada una |
-| Cada 5 minutos en punto (x:00, x:05, x:10...) | Muestra la **hora** abajo de sus ojos |
-| Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** |
+| Cada 5 minutos en punto (x:00, x:05, x:10...) | Su cara se aleja y muestra la **hora** al costado |
+| Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** al costado |
+| Aprietan el **boton A** | Abre el **menu** |
 
 ### Las emociones de Flufi
 
@@ -46,8 +52,28 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | 😴 Sueño | Se le cierran los ojos y le salen "Z" | apagado |
 
 Cuando saluda, cuando esta llena y cuando come o toma, el LED hace **arco iris**: cambia
-de color muy rapido. (Comer, tomar y "estoy llena" ya estan listos: los vamos a usar
-cuando Flufi tenga su menu con los botones.)
+de color muy rapido.
+
+### El menu
+
+| Boton | Que hace |
+|---|---|
+| **A** | Abre el menu y elige la opcion marcada |
+| **B** | Pasa a la opcion siguiente |
+| **BOOT** (el de la placa) | Vuelve atras |
+
+| Opcion | Que hay adentro |
+|---|---|
+| **Modo** | Todavia esta vacio (solo "Atras"): ¡aca van a ir los modos! |
+| **Comer** | 🥐 Medialuna, 🧁 Muffin o 🍩 Dona, con su dibujo |
+| **Tomar** | 🍵 Te, 🍓 Licuado o 🥤 Gaseosa, con su dibujo |
+| **Hora** | La hora grande, el dia y la fecha |
+| **Sensor** | La temperatura y la presion del aire |
+| **Salir** | Vuelve a la cara de Flufi |
+
+Flufi puede comer 3 veces y tomar 3 veces por hora. Si le dan mas, dice **"No, gracias!
+Estoy llena"**. No le pasa nada si no come: Flufi nunca muere. Si nadie toca nada por un
+rato, el menu se cierra solo.
 
 ¡Y vamos a ir enseñandole mas cosas!
 
@@ -62,7 +88,7 @@ Usa el mismo hardware del proyecto **color1.44**:
 | **ESP32-C3** (la placa) | Es el **cerebro**: una computadora chiquita que ejecuta el programa |
 | **Pantalla TFT 1.44" a color** (128×128) | Es la **cara**: ahi se dibujan los ojos |
 | **Sensor BMP280** | Siente la **temperatura** y la **presion del aire** |
-| **2 botones** | Todavia no los usamos |
+| **3 botones** (A, B y BOOT) | Para manejar el **menu** |
 | **LED de colores** de la placa | Se prende del color de cada emocion |
 
 Las conexiones de cada cable estan en
@@ -77,6 +103,7 @@ En [main/flufi_config.h](main/flufi_config.h) se pueden cambiar los colores y el
 ```c
 #define COLOR_OJOS      COLOR(120, 210, 255)   // celeste
 #define COLOR_PESTANAS  COLOR(255, 120, 190)   // rosa
+#define COLOR_BOCA      COLOR(225, 20, 50)     // rojo lapiz labial
 ```
 
 Cada color se arma con tres numeros de 0 a 255: **cuanto rojo, cuanto verde y cuanto
@@ -92,7 +119,7 @@ Ahi tambien estan los mensajes del saludo, por ejemplo:
 
 Y en [components/eyes/eyes.c](components/eyes/eyes.c), arriba de todo, esta la forma de
 los ojos (ancho, alto, que tan redondos son, que tan separados estan) y **el color del
-LED para cada emocion**, por ejemplo:
+LED para cada emocion** y el **color de los rulos** (`COLOR_PELO`), por ejemplo:
 
 ```c
 #define LED_CONTENTA   LED(255, 110, 0)     // naranja

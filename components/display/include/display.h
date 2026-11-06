@@ -42,6 +42,8 @@ void display_draw_text(int x, int y, const char *texto, int escala, color_t colo
 // Escribe el texto centrado de izquierda a derecha, empezando a la altura y.
 // Con y = -1 tambien lo centra de arriba a abajo.
 void display_draw_text_centered(const char *texto, int y, int escala, color_t color);
+// Igual, pero cada renglon se centra alrededor de "centro_x" (y = -1: centrado de arriba a abajo)
+void display_draw_text_centered_at(const char *texto, int centro_x, int y, int escala, color_t color);
 // Ancho del renglon mas largo y alto total del texto, en pixeles
 int  display_text_width(const char *texto, int escala);
 int  display_text_height(const char *texto, int escala);

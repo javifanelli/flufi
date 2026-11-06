@@ -1,19 +1,20 @@
 #ifndef COMIDA_H
 #define COMIDA_H
 
+#include <stdbool.h>
 #include "display.h"
 
 // Comidas y bebidas que se le pueden dar a Flufi
 typedef enum {
     COMIDA_NINGUNA,
     // Para comer
-    COMIDA_TORTA,
-    COMIDA_PAPAS,
-    COMIDA_HAMBURGUESA,
+    COMIDA_MEDIALUNA,
+    COMIDA_MUFFIN,
+    COMIDA_DONA,
     // Para tomar
-    COMIDA_AGUA,      // botella
-    COMIDA_CAFE,      // taza
-    COMIDA_MATE,
+    COMIDA_TE,        // taza con saquito
+    COMIDA_LICUADO,   // vaso alto con frutilla y pajita
+    COMIDA_GASEOSA,   // lata con burbujitas
 } comida_t;
 
 // true si es para tomar

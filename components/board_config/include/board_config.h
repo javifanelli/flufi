@@ -19,11 +19,11 @@
  *  │                      │ RES (RST)  │ GPIO 3     │                         │
  *  │                      │ LEDA       │ 3V3        │ Luz de fondo, directa   │
  *  ├──────────────────────┼────────────┼────────────┼─────────────────────────┤
- *  │ Sensor BMP280 (I2C)  │ SDA        │ GPIO 0     │ Temperatura y presion   │
- *  │                      │ SCL        │ GPIO 1     │ Direccion 0x76 o 0x77   │
+ *  │ Sensor BMP280 (I2C)  │ SDA        │ GPIO 1     │ Temperatura y presion   │
+ *  │                      │ SCL        │ GPIO 0     │ Direccion 0x76 o 0x77   │
  *  ├──────────────────────┼────────────┼────────────┼─────────────────────────┤
- *  │ Boton A              │            │ GPIO 10    │ A GND, pull-up interno  │
- *  │ Boton B              │            │ GPIO 2     │ A GND, pull-up interno  │
+ *  │ Boton A              │            │ GPIO 2     │ A GND, pull-up interno  │
+ *  │ Boton B              │            │ GPIO 10    │ A GND, pull-up interno  │
  *  │ Boton BOOT (placa)   │            │ GPIO 9     │ Ya viene en la placa    │
  *  ├──────────────────────┼────────────┼────────────┼─────────────────────────┤
  *  │ LED RGB (placa)      │            │ GPIO 8     │ WS2812 (un solo LED)    │
@@ -60,12 +60,12 @@
 #endif
 
 // ─── Sensor BMP280 (I2C) ──────────────────────────────────────────────────────
-#define PIN_I2C_SDA       GPIO_NUM_0
-#define PIN_I2C_SCL       GPIO_NUM_1
+#define PIN_I2C_SDA       GPIO_NUM_1
+#define PIN_I2C_SCL       GPIO_NUM_0
 
 // ─── Botones ──────────────────────────────────────────────────────────────────
-#define PIN_BTN_A         GPIO_NUM_10
-#define PIN_BTN_B         GPIO_NUM_2
+#define PIN_BTN_A         GPIO_NUM_2
+#define PIN_BTN_B         GPIO_NUM_10
 #define PIN_BTN_BOOT      GPIO_NUM_9
 #define BTN_NIVEL_APRETADO 0          // con pull-up: apretado = 0
 

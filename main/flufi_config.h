@@ -11,7 +11,8 @@
 #define COLOR_OJOS      COLOR(120, 210, 255)   // celeste
 #define COLOR_PESTANAS  COLOR(255, 120, 190)   // rosa
 #define COLOR_TEXTO     COLOR(255, 200, 230)   // rosa clarito
-#define COLOR_BOCA      COLOR(255, 120, 190)   // rosa (como las pestañas)
+#define COLOR_BOCA      COLOR(225, 20, 50)     // rojo lapiz labial, ¡de diva!
+// El color de los rulos esta arriba de todo en components/eyes/eyes.c
 
 // Brillo del LED de la placa, de 0 a 100 %. Los colores de cada emocion estan
 // arriba de todo en components/eyes/eyes.c
@@ -38,9 +39,19 @@
 // ─── Hora y sensor en punto (igual que Pitri) ───────────────────────────────
 #define HORA_CADA_MINUTOS        5      // la hora en x:00, x:05, x:10...
 #define SENSOR_CADA_MINUTOS      15     // temperatura y presion en x:00, x:15, x:30, x:45
+// La cara se aleja (se achica y se corre a la izquierda) y el dato aparece al costado
 #define MOSTRAR_HORA_MS          4000   // cuanto se ve la hora
 #define MOSTRAR_SENSOR_MS        6000   // cuanto se ven los datos del sensor
 #define TIEMPO_ENTRE_LECTURAS_MS (10 * 1000)   // cada cuanto lee el sensor
+
+// ─── Menu ────────────────────────────────────────────────────────────────────
+// Boton A = abrir el menu y elegir, boton B = siguiente, boton BOOT = volver atras
+#define MENU_ESPERA_MAX_MS  (20 * 1000)   // si nadie toca nada, se cierra solo
+#define MOSTRAR_EN_MENU_MS  5000          // cuanto se ve la hora o el sensor al elegirlos
+
+// ─── Comida y bebida ─────────────────────────────────────────────────────────
+#define COMIDAS_POR_HORA  3        // cuantas veces puede comer en una hora
+#define BEBIDAS_POR_HORA  3        // cuantas veces puede tomar en una hora
 
 // ─── Juegos ───────────────────────────────────────────────────────────────────
 // Descanso entre un juego y otro (se elige un valor al azar en este rango)
