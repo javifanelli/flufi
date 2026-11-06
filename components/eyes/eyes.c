@@ -34,10 +34,10 @@ static const char *TAG = "OJOS";
 // ─── Color del LED para cada emocion (¡jueguen con estos colores!) ───────────
 // LED(rojo, verde, azul), de 0 a 255
 
-#define LED_TRANQUILA  LED(0, 180, 255)     // celeste
+#define LED_TRANQUILA  LED(255, 80, 180)    // rosa
 #define LED_CONTENTA   LED(255, 110, 0)     // naranja
 #define LED_GUINO      LED(150, 0, 255)     // violeta
-#define LED_SORPRESA   LED(255, 255, 255)   // blanco
+#define LED_SORPRESA   LED(0, 180, 255)     // celeste
 #define LED_ENOJADA    LED(120, 0, 20)      // bordo
 #define LED_TRISTE     LED(0, 255, 0)       // verde
 #define LED_MAREADA    LED(255, 255, 255)   // blanco
@@ -119,6 +119,17 @@ static bool cortar_ahora(void)
 {
     if (!cortado && hay_que_cortar != NULL && hay_que_cortar()) cortado = true;
     return cortado;
+}
+
+// Las funciones publicas la llaman al empezar (lo de antes ya no cuenta como cortado)
+void empezar_accion(void)
+{
+    cortado = false;
+}
+
+void poner_led_tranquila(void)
+{
+    poner_led(LED_TRANQUILA);
 }
 
 void esperar(int ms)

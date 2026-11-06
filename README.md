@@ -30,7 +30,8 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | Se conecta | Dice **"Tengo wifi!"** |
 | Sabe la hora | Saluda segun el momento del dia: **"¡Buen dia!"**, **"¡Buenas tardes!"** o **"¡Buenas noches!"** |
 | Termina de arrancar | Saluda: se sorprende y se pone contenta, con el LED en **arco iris** 🌈 |
-| Esta tranquila | Juega con sus emociones, y el **LED de la placa** se prende del color de cada una |
+| Esta tranquila (modo Normal) | Juega con sus emociones, y el **LED de la placa** se prende del color de cada una |
+| Esta en modo **Animales** | Hace de animal: coneja, unicornio, ratoncita, mariposa o zorrita |
 | Cada 5 minutos en punto (x:00, x:05, x:10...) | Su cara se aleja y muestra la **hora** al costado |
 | Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** al costado |
 | Aprietan el **boton A** | Abre el **menu** |
@@ -39,10 +40,10 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 
 | Emocion | Que hace | LED |
 |---|---|---|
-| 🙂 Tranquila | Mira para todos lados, pasea, da vueltas, parpadea | celeste |
+| 🙂 Tranquila | Mira para todos lados, pasea, da vueltas, parpadea | rosa |
 | 😊 Contenta | Ojitos felices ^ ^, sonrisa y saltitos | naranja |
 | 😉 Guiño | Cierra un ojo con carita feliz | violeta |
-| 😮 Sorpresa | Ojos grandes y boca en "O" | blanco |
+| 😮 Sorpresa | Ojos grandes y boca en "O" | celeste |
 | 😠 Enojada | Cejas para adentro, tiembla | bordo |
 | 😢 Triste | Cejas para afuera y le caen lagrimas | verde |
 | 😵‍💫 Mareada | Ojos en espiral que giran | blanco |
@@ -54,6 +55,19 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 Cuando saluda, cuando esta llena y cuando come o toma, el LED hace **arco iris**: cambia
 de color muy rapido.
 
+### Los animales (modo Animales)
+
+Flufi hace de animal, pero siempre con **sus ojos, sus pestañas y sus labios rojos**. Los
+animales no tienen rulos: en su lugar llevan sus orejas, su cuerno o sus antenas.
+
+| Animal | Que se le agrega | Que hace | LED |
+|---|---|---|---|
+| 🐰 Coneja | Orejas largas (una se dobla), naricita de corazon, bigotes y dientitos | Olfatea y da saltitos ("Hop!") | blanco |
+| 🦄 Unicornio | Crin de **arco iris** en vez de los rulos y un cuerno dorado | Flota entre estrellitas ("¡Magia!") | arco iris |
+| 🐭 Ratoncita | Orejas redondas grandes, naricita y bigotes | Olfatea y aparece un quesito ("¡Queso!") | amarillo |
+| 🦋 Mariposa | Alas de colores y antenitas | Vuela aleteando ("¡Fiu!") y guiña un ojo | violeta |
+| 🦊 Zorrita | Orejas en punta, cachetes blancos y naricita | Mira picara y mueve la cola ("Je je!") | naranja |
+
 ### El menu
 
 | Boton | Que hace |
@@ -64,7 +78,7 @@ de color muy rapido.
 
 | Opcion | Que hay adentro |
 |---|---|
-| **Modo** | Todavia esta vacio (solo "Atras"): ¡aca van a ir los modos! |
+| **Modo** | **Normal** (emociones) o **Animales**. El modo de ahora tiene un puntito |
 | **Comer** | 🥐 Medialuna, 🧁 Muffin o 🍩 Dona, con su dibujo |
 | **Tomar** | 🍵 Te, 🍓 Licuado o 🥤 Gaseosa, con su dibujo |
 | **Hora** | La hora grande, el dia y la fecha |

@@ -55,6 +55,8 @@ void animar(cara_t destino, int ms);          // pasa suave a la cara "destino"
 void mover_a(float x, float y, int ms);       // como animar, pero solo la posicion
 void cerrar_y_abrir(bool izq, bool der, int cerrado_ms);
 void poner_led(color_led_t c);
+void poner_led_tranquila(void);
+void empezar_accion(void);                    // las funciones publicas la llaman al empezar
 void arco(float cx, float cy, float r, float desde, float hasta, int grosor, color_t c);
 void dibujar_corazon(float cx, float cy, float r, color_t c);
 // Los rulos, pintados con estos colores (de izquierda a derecha, corridos "corrimiento")

@@ -14,6 +14,26 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-05 — Nuevos colores y animales sin rulos 🎨
+
+**Que hicimos:** Cambiamos el color del LED de dos emociones: cuando Flufi esta **tranquila** ahora es **rosa**, y cuando se **sorprende** es **celeste**. A la coneja le pusimos el LED **blanco**, como su pelaje, para que no se confunda con el rosa de tranquila. Y decidimos que **los animales no tienen rulos**: la mariposa tambien se los saca y se queda solo con sus antenitas.
+
+**Que aprendimos:**
+- Los colores del LED de cada emocion estan arriba de todo en , y los de los animales en la lista de . ¡Se pueden cambiar cuando quieran!
+
+---
+
+## 2026-11-05 — ¡Modo Animales! 🐰🦄🐭🦋🦊
+
+**Que hicimos:** Sofia eligio cinco animales para que Flufi los interprete: **coneja**, **unicornio**, **ratoncita**, **mariposa** y **zorrita**. En el menu, en **Modo**, ahora se puede elegir entre **Normal** (sus emociones) y **Animales**. Cada animal mantiene los ojos, las pestañas y los labios de Flufi, y le agrega sus partes: orejas, cuerno, alas, bigotes... El unicornio cambia los rulos por una crin de arco iris, y la mariposa se queda con sus rulos y le salen antenitas. Para cambiar de animal, Flufi cierra los ojos y los abre ya disfrazada.
+
+**Que aprendimos:**
+- Las orejas de la coneja estan hechas con **muchos circulitos en fila**. Si la fila se tuerce por la mitad, ¡la oreja se dobla!
+- Las alas de la mariposa son **ovalos** que se hacen mas finitos y mas anchos una y otra vez: asi parece que aletea.
+- Pusimos los animales en un archivo aparte (`animales.c`), igual que los disfraces de Pitri, para que cada archivo sea mas facil de leer.
+
+---
+
 ## 2026-11-05 — Una gaseosa con burbujas 🥤
 
 **Que hicimos:** Cambiamos el mate por una **gaseosa**: una lata roja con una onda blanca, el anillito arriba y tres burbujitas que suben. Con cada sorbo se va una burbuja, y al ultimo sorbo Flufi dice **"Burp!"**.

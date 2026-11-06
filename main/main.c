@@ -259,9 +259,40 @@ static void dibujar_opcion(const comida_t *lista, const char *const *nombres, in
 static void dibujar_opcion_comida(int opcion) { dibujar_opcion(comidas, nombres_comidas, CANT_COMIDAS, opcion); }
 static void dibujar_opcion_bebida(int opcion) { dibujar_opcion(bebidas, nombres_bebidas, CANT_BEBIDAS, opcion); }
 
+// ─── Modos ───────────────────────────────────────────────────────────────────
+// En el modo Normal Flufi juega con sus emociones. En el modo Animales hace de
+// animal (siempre con sus ojos, sus pestañas y sus labios).
+
+typedef enum { MODO_NORMAL, MODO_ANIMALES, CANT_MODOS } modo_t;
+static const char *const nombres_modos[CANT_MODOS] = { "Normal", "Animales" };
+static modo_t modo = MODO_NORMAL;
+
+static eyes_animal_t ultimo_animal = ANIMAL_NINGUNO;
+
+// Elige un animal al azar, distinto del ultimo que hizo
+static eyes_animal_t elegir_animal(void)
+{
+    eyes_animal_t a;
+    do {
+        a = (eyes_animal_t)(ANIMAL_NINGUNO + 1 + esp_random() % (CANT_ANIMALES - 1));
+    } while (a == ultimo_animal);
+    ultimo_animal = a;
+    return a;
+}
+
+static void cambiar_modo(modo_t nuevo)
+{
+    modo = nuevo;
+    ultimo_animal = ANIMAL_NINGUNO;
+    ESP_LOGI(TAG, "Modo %s", nombres_modos[modo]);
+    char texto[32];
+    snprintf(texto, sizeof(texto), "Modo\n%s", nombres_modos[modo]);
+    mostrar_texto(texto, 1500);
+}
+
 // ─── El menu ─────────────────────────────────────────────────────────────────
 //   Menu:  Modo / Comer / Tomar / Hora / Sensor / Salir
-//   Modo:  (todavia no hay modos) / Atras
+//   Modo:  Normal / Animales / Atras (el modo de ahora tiene un puntito)
 //   Comer: Medialuna / Muffin / Dona / Atras (con dibujos)
 //   Tomar: Te / Licuado / Gaseosa / Atras (con dibujos)
 // Boton A = elegir, boton B = siguiente, boton BOOT = volver atras
@@ -270,7 +301,7 @@ static void abrir_menu(void)
 {
     static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Salir" };
     enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_SALIR };
-    static const char *const opciones_modo[] = { "Atras" };   // los modos van a ir aca
+    static const char *const opciones_modo[CANT_MODOS + 1] = { "Normal", "Animales", "Atras" };
 
     ESP_LOGI(TAG, "Abriendo el menu");
     led_color(255, 120, 190);          // LED rosa mientras esta el menu
@@ -281,9 +312,11 @@ static void abrir_menu(void)
         if (elegida >= 0) marcada = elegida;   // al volver, queda marcada la misma
 
         if (elegida == OPCION_MODO) {
-            int m = menu_elegir("Modo", opciones_modo, 1, 0, -1, MENU_ESPERA_MAX_MS);
+            int m = menu_elegir("Modo", opciones_modo, CANT_MODOS + 1, modo, modo, MENU_ESPERA_MAX_MS);
             if (m == MENU_SE_CERRO) break;
-            continue;                           // "Atras" o BOOT: vuelve al menu
+            if (m < 0 || m == CANT_MODOS) continue;   // "Atras" o BOOT: vuelve al menu
+            cambiar_modo((modo_t)m);
+            break;                              // y vuelve a la cara
         }
         if (elegida == OPCION_COMER) {
             int c = menu_elegir_dibujos("Comer", CANT_COMIDAS + 1, dibujar_opcion_comida, 0, MENU_ESPERA_MAX_MS);
@@ -384,8 +417,9 @@ void app_main(void)
         // En punto: la hora cada 5 minutos y el sensor cada 15
         revisar_horarios();
 
-        // Juega con sus emociones (cada una prende el LED de un color)
-        eyes_jugar();
+        // Juega con sus emociones (modo Normal) o hace de animal (modo Animales)
+        if (modo == MODO_ANIMALES) eyes_actuar(elegir_animal());
+        else                       eyes_jugar();
 
         // Un descansito entre juego y juego, y a veces un parpadeo
         descansar(DESCANSO_MIN_MS + esp_random() % (DESCANSO_MAX_MS - DESCANSO_MIN_MS));
