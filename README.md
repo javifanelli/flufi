@@ -26,6 +26,8 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | Sabe la hora | Saluda segun el momento del dia: **"¡Buen dia!"**, **"¡Buenas tardes!"** o **"¡Buenas noches!"** |
 | Termina de arrancar | Saluda: se sorprende y se pone contenta, con el LED en **arco iris** 🌈 |
 | Esta tranquila | Juega con sus emociones, y el **LED de la placa** se prende del color de cada una |
+| Cada 5 minutos en punto (x:00, x:05, x:10...) | Muestra la **hora** abajo de sus ojos |
+| Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** |
 
 ### Las emociones de Flufi
 
@@ -59,7 +61,7 @@ Usa el mismo hardware del proyecto **color1.44**:
 |---|---|
 | **ESP32-C3** (la placa) | Es el **cerebro**: una computadora chiquita que ejecuta el programa |
 | **Pantalla TFT 1.44" a color** (128×128) | Es la **cara**: ahi se dibujan los ojos |
-| **Sensor BMP280** | Siente la **temperatura** y la **presion del aire** (todavia no lo usamos) |
+| **Sensor BMP280** | Siente la **temperatura** y la **presion del aire** |
 | **2 botones** | Todavia no los usamos |
 | **LED de colores** de la placa | Se prende del color de cada emocion |
 

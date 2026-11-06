@@ -35,6 +35,13 @@
 #define ESPERA_HORA_MS          (10 * 1000)  // cuanto espera la hora despues de conectarse
 #define MOSTRAR_SALUDO_MS       3000         // "¡Buen dia!", "¡Buenas tardes!"...
 
+// ─── Hora y sensor en punto (igual que Pitri) ───────────────────────────────
+#define HORA_CADA_MINUTOS        5      // la hora en x:00, x:05, x:10...
+#define SENSOR_CADA_MINUTOS      15     // temperatura y presion en x:00, x:15, x:30, x:45
+#define MOSTRAR_HORA_MS          4000   // cuanto se ve la hora
+#define MOSTRAR_SENSOR_MS        6000   // cuanto se ven los datos del sensor
+#define TIEMPO_ENTRE_LECTURAS_MS (10 * 1000)   // cada cuanto lee el sensor
+
 // ─── Juegos ───────────────────────────────────────────────────────────────────
 // Descanso entre un juego y otro (se elige un valor al azar en este rango)
 #define DESCANSO_MIN_MS  300

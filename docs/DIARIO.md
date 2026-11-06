@@ -14,6 +14,16 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-05 — La hora y el sensor, en punto ⏰🌡️
+
+**Que hicimos:** Igual que Pitri, Flufi muestra la **hora en punto** cada 5 minutos (x:00, x:05, x:10...), y cada 15 minutos (x:00, x:15, x:30, x:45) muestra la **temperatura** y la **presion del aire** que mide su sensor BMP280. Lo escribe abajo de sus ojitos.
+
+**Que aprendimos:**
+- La **presion del aire** es cuanto "pesa" el aire que tenemos encima. Se mide en hectopascales (hPa): al nivel del mar es mas o menos 1013. Cuando baja, muchas veces va a llover.
+- Cada sensor BMP280 viene de fabrica con unos **numeros de calibracion** propios. Con esos numeros se corrigen las mediciones para que den bien.
+
+---
+
 ## 2026-11-05 — Emociones de colores 🌈
 
 **Que hicimos:** Flufi aprendio las mismas emociones que Pitri (contenta, sorpresa, enojada, triste, mareada, enamorada, verano, sospecha, sueño...), pero con una diferencia: **cada emocion prende el LED de la placa de un color**. Contenta es naranja, enamorada es rojo, triste es verde, y cuando se duerme el LED se apaga. Cuando saluda, el LED hace **arco iris**.
