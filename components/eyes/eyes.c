@@ -64,7 +64,7 @@ const cara_t CARA_NORMAL = {
 };
 
 cara_t cara;
-color_t color_fondo;
+color_t color_fondo, color_fondo_normal;
 static color_t color_ojos, color_pestanas, color_boca, color_texto;
 
 static char texto_costado[64];        // texto al costado de la cara (eyes_decir)
@@ -527,12 +527,12 @@ static void dibujar(void)
     float mx = LCD_H_RES / 2.0f + cara.x;
 
     display_clear(color_fondo);
-    if (animal_lleva_rulos()) dibujar_pelo();
-    dibujar_animal_atras(mx, cy);              // orejas, alas... (si hace de animal)
+    if (personaje_lleva_rulos()) dibujar_pelo();
+    dibujar_personaje_atras(mx, cy);           // orejas, alas, sombrero... (si hace de personaje)
     dibujar_ojo(cx_izq, cy, cara.ancho * z, cara.alto * z * (1 - p), cara.abre_izq, -1);
     dibujar_ojo(cx_der, cy, cara.ancho * z, cara.alto * z * (1 + p), cara.abre_der, +1);
     dibujar_boca(cy, p);
-    dibujar_animal_adelante(mx, cy);           // naricita, bigotes...
+    dibujar_personaje_adelante(mx, cy);        // naricita, cosas que trae...
 
     // Corazoncitos que suben por toda la pantalla
     if (cara.corazoncitos > 0.01f && cara.corazoncitos < 0.99f) {
@@ -908,6 +908,7 @@ void eyes_init(color_t ojos, color_t pestanas_color, color_t boca, color_t texto
     color_boca     = boca;
     color_texto    = texto;
     color_fondo    = fondo;
+    color_fondo_normal = fondo;
     preparar_vueltitas();
     eyes_reiniciar();
 }
@@ -924,7 +925,8 @@ void eyes_reiniciar(void)
     globo = NULL;
     comida_actual = COMIDA_NINGUNA;
     mordidas = 0;
-    animal_actual = ANIMAL_NINGUNO;
+    personaje_actual = PERSONAJE_NINGUNO;
+    color_fondo = color_fondo_normal;
     cara = CARA_NORMAL;
     led_puesto = (color_led_t){ 1, 2, 3 };   // por si otro cambio el LED (el menu): que se mande de nuevo
     poner_led(LED_TRANQUILA);

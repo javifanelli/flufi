@@ -260,30 +260,37 @@ static void dibujar_opcion_comida(int opcion) { dibujar_opcion(comidas, nombres_
 static void dibujar_opcion_bebida(int opcion) { dibujar_opcion(bebidas, nombres_bebidas, CANT_BEBIDAS, opcion); }
 
 // ─── Modos ───────────────────────────────────────────────────────────────────
-// En el modo Normal Flufi juega con sus emociones. En el modo Animales hace de
-// animal (siempre con sus ojos, sus pestañas y sus labios).
+// En el modo Normal Flufi juega con sus emociones. En los otros hace de
+// personaje (siempre con sus ojos, sus pestañas y sus labios).
 
-typedef enum { MODO_NORMAL, MODO_ANIMALES, CANT_MODOS } modo_t;
-static const char *const nombres_modos[CANT_MODOS] = { "Normal", "Animales" };
+typedef enum { MODO_NORMAL, MODO_ANIMALES, MODO_FANTASIA, MODO_EJERCICIO, CANT_MODOS } modo_t;
+static const char *const nombres_modos[CANT_MODOS] = { "Normal", "Animales", "Fantasia", "Ejercicio" };
 static modo_t modo = MODO_NORMAL;
 
-static eyes_animal_t ultimo_animal = ANIMAL_NINGUNO;
+// El primer personaje de cada modo (los 5 de cada modo estan seguidos en eyes.h)
+static const eyes_personaje_t primer_personaje[CANT_MODOS] = {
+    [MODO_ANIMALES]  = PRIMER_ANIMAL,
+    [MODO_FANTASIA]  = PRIMER_FANTASIA,
+    [MODO_EJERCICIO] = PRIMER_EJERCICIO,
+};
 
-// Elige un animal al azar, distinto del ultimo que hizo
-static eyes_animal_t elegir_animal(void)
+static eyes_personaje_t ultimo_personaje = PERSONAJE_NINGUNO;
+
+// Elige un personaje del modo de ahora, distinto del ultimo que hizo
+static eyes_personaje_t elegir_personaje(void)
 {
-    eyes_animal_t a;
+    eyes_personaje_t p;
     do {
-        a = (eyes_animal_t)(ANIMAL_NINGUNO + 1 + esp_random() % (CANT_ANIMALES - 1));
-    } while (a == ultimo_animal);
-    ultimo_animal = a;
-    return a;
+        p = (eyes_personaje_t)(primer_personaje[modo] + esp_random() % PERSONAJES_POR_MODO);
+    } while (p == ultimo_personaje);
+    ultimo_personaje = p;
+    return p;
 }
 
 static void cambiar_modo(modo_t nuevo)
 {
     modo = nuevo;
-    ultimo_animal = ANIMAL_NINGUNO;
+    ultimo_personaje = PERSONAJE_NINGUNO;
     ESP_LOGI(TAG, "Modo %s", nombres_modos[modo]);
     char texto[32];
     snprintf(texto, sizeof(texto), "Modo\n%s", nombres_modos[modo]);
@@ -292,7 +299,7 @@ static void cambiar_modo(modo_t nuevo)
 
 // ─── El menu ─────────────────────────────────────────────────────────────────
 //   Menu:  Modo / Comer / Tomar / Hora / Sensor / Salir
-//   Modo:  Normal / Animales / Atras (el modo de ahora tiene un puntito)
+//   Modo:  Normal / Animales / Fantasia / Ejercicio / Atras (el de ahora tiene un puntito)
 //   Comer: Medialuna / Muffin / Dona / Atras (con dibujos)
 //   Tomar: Te / Licuado / Gaseosa / Atras (con dibujos)
 // Boton A = elegir, boton B = siguiente, boton BOOT = volver atras
@@ -301,7 +308,7 @@ static void abrir_menu(void)
 {
     static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Salir" };
     enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_SALIR };
-    static const char *const opciones_modo[CANT_MODOS + 1] = { "Normal", "Animales", "Atras" };
+    static const char *const opciones_modo[CANT_MODOS + 1] = { "Normal", "Animales", "Fantasia", "Ejercicio", "Atras" };
 
     ESP_LOGI(TAG, "Abriendo el menu");
     led_color(255, 120, 190);          // LED rosa mientras esta el menu
@@ -417,8 +424,8 @@ void app_main(void)
         // En punto: la hora cada 5 minutos y el sensor cada 15
         revisar_horarios();
 
-        // Juega con sus emociones (modo Normal) o hace de animal (modo Animales)
-        if (modo == MODO_ANIMALES) eyes_actuar(elegir_animal());
+        // Juega con sus emociones (modo Normal) o hace de personaje (los otros modos)
+        if (modo != MODO_NORMAL) eyes_actuar(elegir_personaje());
         else                       eyes_jugar();
 
         // Un descansito entre juego y juego, y a veces un parpadeo

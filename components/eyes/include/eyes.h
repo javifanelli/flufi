@@ -40,20 +40,41 @@ void eyes_decir_que_no(void);          // esta llena: mueve la cabeza diciendo q
 void eyes_comer(comida_t comida);      // 3 mordiscos y "¡Rico!"
 void eyes_tomar(comida_t bebida);      // 3 sorbos y "Ahh!"
 
-// ─── Animales (modo Animales) ────────────────────────────────────────────────
-// Flufi hace de animal, pero siempre con sus ojos, sus pestañas y sus labios.
-typedef enum {
-    ANIMAL_NINGUNO,
-    ANIMAL_CONEJA,
-    ANIMAL_UNICORNIO,
-    ANIMAL_RATONCITA,
-    ANIMAL_MARIPOSA,
-    ANIMAL_ZORRITA,
-    CANT_ANIMALES
-} eyes_animal_t;
+// ─── Personajes (los modos Animales, Fantasia y Ejercicio) ───────────────────
+// Flufi hace de personaje, pero siempre con sus ojos, sus pestañas y sus labios.
+// Cada modo tiene 5 personajes seguidos en esta lista.
+#define PERSONAJES_POR_MODO 5
 
-// Se disfraza de ese animal (si no lo estaba) y hace lo suyo (~5 segundos)
-void eyes_actuar(eyes_animal_t animal);
+typedef enum {
+    PERSONAJE_NINGUNO,
+    // Animales (en animales.c)
+    PERSONAJE_CONEJA,
+    PERSONAJE_UNICORNIO,
+    PERSONAJE_RATONCITA,
+    PERSONAJE_MARIPOSA,
+    PERSONAJE_ZORRITA,
+    // Fantasia: cuentos de hadas (en fantasia.c)
+    PERSONAJE_HADA,
+    PERSONAJE_PRINCESA,
+    PERSONAJE_SIRENA,
+    PERSONAJE_DRAGONCITA,
+    PERSONAJE_CAPERUCITA,
+    // Ejercicio (en ejercicio.c)
+    PERSONAJE_PATINAR,
+    PERSONAJE_BAILAR,
+    PERSONAJE_FUTBOL,
+    PERSONAJE_BICI,
+    PERSONAJE_PESAS,
+    CANT_PERSONAJES
+} eyes_personaje_t;
+
+// El primer personaje de cada modo
+#define PRIMER_ANIMAL     PERSONAJE_CONEJA
+#define PRIMER_FANTASIA   PERSONAJE_HADA
+#define PRIMER_EJERCICIO  PERSONAJE_PATINAR
+
+// Se disfraza de ese personaje (si no lo estaba) y hace lo suyo (~5 segundos)
+void eyes_actuar(eyes_personaje_t personaje);
 
 // Se saca el disfraz y vuelve a ser Flufi (con sus rulos)
 void eyes_sacar_disfraz(void);

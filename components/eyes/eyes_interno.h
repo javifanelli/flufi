@@ -1,8 +1,9 @@
 #ifndef EYES_INTERNO_H
 #define EYES_INTERNO_H
 
-// Cosas que comparten eyes.c (ojos, emociones y juegos) y animales.c (los
-// animales del modo Animales). NO es parte de lo que usa main.c: eso esta en eyes.h.
+// Cosas que comparten eyes.c (ojos, emociones y juegos) y los personajes de
+// los modos (personajes.c, animales.c, fantasia.c y ejercicio.c).
+// NO es parte de lo que usa main.c: eso esta en eyes.h.
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,15 +35,16 @@ typedef struct {
     float ondas;              // 0 a 1: ondas de WiFi al costado
     float texto;              // 0 a 1: texto al costado de la cara (entra deslizandose)
     float fase;               // "reloj" de las animaciones (cada +1 es una vuelta)
-    float comida_x, comida_y; // donde esta la comida (o lo que trae un animal, como el queso)
+    float comida_x, comida_y; // donde esta la comida (o lo que trae un personaje)
 } cara_t;
 
 extern const cara_t CARA_NORMAL;
 extern cara_t cara;                       // la cara de este momento
-extern color_t color_fondo;
+extern color_t color_fondo;               // el color de atras de este momento
+extern color_t color_fondo_normal;        // el de siempre (la sirena lo cambia por el mar)
 extern const char *globo;                 // lo que dice en el globito (o NULL)
 extern bool arcoiris;                     // true = el LED hace arco iris
-extern eyes_animal_t animal_actual;       // que animal esta haciendo (o ninguno)
+extern eyes_personaje_t personaje_actual; // que personaje esta haciendo (o ninguno)
 
 // Colores del LED: LED(rojo, verde, azul), de 0 a 255
 typedef struct { uint8_t r, g, b; } color_led_t;
@@ -62,9 +64,42 @@ void dibujar_corazon(float cx, float cy, float r, color_t c);
 // Los rulos, pintados con estos colores (de izquierda a derecha, corridos "corrimiento")
 void dibujar_rulos_de_colores(const color_t *colores, int cantidad, int corrimiento, color_t vueltita);
 
-// ─── Herramientas de animales.c ──────────────────────────────────────────────
-bool animal_lleva_rulos(void);                    // ¿se ven los rulos de Flufi?
-void dibujar_animal_atras(float mx, float cy);    // lo que va detras de los ojos (orejas, alas...)
-void dibujar_animal_adelante(float mx, float cy); // lo que va delante (nariz, bigotes...)
+// ─── Personajes ──────────────────────────────────────────────────────────────
+// Cada personaje tiene:
+//   - atras:    lo que va detras de los ojos (orejas, alas, sombrero...)
+//   - adelante: lo que va delante (naricita, cosas que trae, la pelota...)
+//   - actuar:   lo que hace (unos 5 segundos)
+// Las medidas se piensan desde "mx" (el medio de la cara, de izquierda a
+// derecha) y "cy" (la altura del centro de los ojos).
+typedef struct {
+    const char *nombre;
+    bool rulos;                             // ¿se ven los rulos de Flufi?
+    float ancho, alto, y;                   // tamaño y altura de los ojos
+    color_led_t led;                        // color del LED mientras es ese personaje
+    color_t fondo;                          // color de atras (NEGRO = el de siempre)
+    void (*atras)(float mx, float cy);
+    void (*adelante)(float mx, float cy);
+    void (*actuar)(void);
+    void (*limpiar)(void);                  // saca las cosas que aparecen al actuar
+} personaje_info_t;
+
+// Cada archivo tiene la lista de los 5 personajes de su modo, en el orden de eyes.h
+extern const personaje_info_t personajes_animales[PERSONAJES_POR_MODO];   // animales.c
+extern const personaje_info_t personajes_fantasia[PERSONAJES_POR_MODO];   // fantasia.c
+extern const personaje_info_t personajes_ejercicio[PERSONAJES_POR_MODO];  // ejercicio.c
+
+// Lo que usa eyes.c (esta en personajes.c)
+bool personaje_lleva_rulos(void);                    // ¿se ven los rulos de Flufi?
+void dibujar_personaje_atras(float mx, float cy);
+void dibujar_personaje_adelante(float mx, float cy);
+
+// Herramientas de dibujo para los personajes (estan en personajes.c)
+void rect(float x, float y, float w, float h, color_t c);
+void circulo(float cx, float cy, float r, color_t c);
+void triangulo(float x0, float y0, float x1, float y1, float x2, float y2, color_t c);
+void linea(float x0, float y0, float x1, float y1, int grosor, color_t c);
+void elipse(float cx, float cy, float rx, float ry, color_t c);      // ovalo relleno
+void estrella(float x, float y, float r, color_t c);                 // estrellita de 4 puntas
+float onda(float veces);       // va de -1 a 1 y vuelve, al ritmo de cara.fase
 
 #endif // EYES_INTERNO_H

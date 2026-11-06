@@ -5,71 +5,18 @@
 //  Flufi hace de animal, pero SIEMPRE con sus ojos, sus pestañas y sus labios
 //  rojos. Cada animal le agrega sus partes: orejas, cuerno, alas, bigotes...
 //
-//  Cada animal tiene:
-//    - dibujar_..._atras:    lo que va detras de los ojos (orejas, alas, crin)
-//    - dibujar_..._adelante: lo que va delante (naricita, bigotes, cosas que trae)
-//    - actuar_...:           lo que hace (unos 5 segundos)
-//
-//  Las medidas estan pensadas desde "mx" (el medio de la cara, de izquierda a
-//  derecha) y "cy" (la altura del centro de los ojos).
+//  Como se arma un personaje: ver eyes_interno.h. Los animales no tienen rulos.
 //
 #include "eyes_interno.h"
-
-#include "esp_log.h"
-
-static const char *TAG = "ANIMALES";
-
-eyes_animal_t animal_actual = ANIMAL_NINGUNO;
 
 // Cosas que aparecen solo mientras actua
 static bool hay_estrellas = false;   // unicornio
 static bool hay_queso     = false;   // ratoncita
 static bool hay_cola      = false;   // zorrita
 
-// ─── Herramientas ────────────────────────────────────────────────────────────
-
-static void rect(float x, float y, float w, float h, color_t c)
+static void limpiar(void)
 {
-    display_fill_rect((int)x, (int)y, (int)(w < 1 ? 1 : w), (int)(h < 1 ? 1 : h), c);
-}
-
-static void circulo(float cx, float cy, float r, color_t c)
-{
-    display_fill_circle((int)cx, (int)cy, (int)(r + 0.5f), c);
-}
-
-static void triangulo(float x0, float y0, float x1, float y1, float x2, float y2, color_t c)
-{
-    display_fill_triangle((int)x0, (int)y0, (int)x1, (int)y1, (int)x2, (int)y2, c);
-}
-
-static void linea(float x0, float y0, float x1, float y1, int grosor, color_t c)
-{
-    display_draw_line((int)x0, (int)y0, (int)x1, (int)y1, grosor, c);
-}
-
-// Un ovalo relleno, renglon por renglon
-static void elipse(float cx, float cy, float rx, float ry, color_t c)
-{
-    if (rx < 1 || ry < 1) return;
-    for (int dy = -(int)ry; dy <= (int)ry; dy++) {
-        float medio = rx * sqrtf(1 - (dy * dy) / (ry * ry));
-        rect(cx - medio, cy + dy, 2 * medio + 1, 1, c);
-    }
-}
-
-// Estrellita de 4 puntas
-static void estrella(float x, float y, float r, color_t c)
-{
-    rect(x - r, y, 2 * r + 1, 1, c);
-    rect(x, y - r, 1, 2 * r + 1, c);
-    rect(x - 1, y - 1, 3, 3, c);
-}
-
-// Va de -1 a 1 y vuelve, al ritmo de cara.fase ("veces" vueltas por cada +1)
-static float onda(float veces)
-{
-    return sinf(cara.fase * veces * 2 * PI);
+    hay_estrellas = hay_queso = hay_cola = false;
 }
 
 // Bigotes: tres de cada lado, abajo de los ojos ("mueve" los hace temblar)
@@ -398,96 +345,14 @@ static void actuar_zorrita(void)
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-//  La lista de animales
+//  La lista de animales (en el orden de eyes.h)
 // ═════════════════════════════════════════════════════════════════════════════
 
-typedef struct {
-    const char *nombre;
-    float ancho, alto, y;                   // tamaño y altura de los ojos
-    color_led_t led;                        // color del LED mientras es ese animal
-    void (*atras)(float mx, float cy);
-    void (*adelante)(float mx, float cy);
-    void (*actuar)(void);
-} animal_info_t;
-
-static const animal_info_t animales[CANT_ANIMALES] = {
-    //                      nombre       ancho alto  y   LED
-    [ANIMAL_CONEJA]    = { "coneja",    24,   30,   6, LED(255, 255, 255), dibujar_coneja_atras,    dibujar_coneja_adelante,    actuar_coneja    },
-    [ANIMAL_UNICORNIO] = { "unicornio", 30,   40,   2, LED(200, 80, 255),  dibujar_unicornio_atras, dibujar_unicornio_adelante, actuar_unicornio },
-    [ANIMAL_RATONCITA] = { "ratoncita", 24,   30,   6, LED(255, 200, 0),   dibujar_ratoncita_atras, dibujar_ratoncita_adelante, actuar_ratoncita },
-    [ANIMAL_MARIPOSA]  = { "mariposa",  26,   32,   4, LED(170, 60, 255),  dibujar_mariposa_atras,  dibujar_mariposa_adelante,  actuar_mariposa  },
-    [ANIMAL_ZORRITA]   = { "zorrita",   24,   30,   6, LED(255, 80, 0),    dibujar_zorrita_atras,   dibujar_zorrita_adelante,   actuar_zorrita   },
+const personaje_info_t personajes_animales[PERSONAJES_POR_MODO] = {
+    //  nombre       rulos  ancho alto  y   LED                 fondo
+    { "coneja",    false, 24,   30,   6, LED(255, 255, 255), NEGRO, dibujar_coneja_atras,    dibujar_coneja_adelante,    actuar_coneja,    limpiar },
+    { "unicornio", false, 30,   40,   2, LED(200, 80, 255),  NEGRO, dibujar_unicornio_atras, dibujar_unicornio_adelante, actuar_unicornio, limpiar },
+    { "ratoncita", false, 24,   30,   6, LED(255, 200, 0),   NEGRO, dibujar_ratoncita_atras, dibujar_ratoncita_adelante, actuar_ratoncita, limpiar },
+    { "mariposa",  false, 26,   32,   4, LED(170, 60, 255),  NEGRO, dibujar_mariposa_atras,  dibujar_mariposa_adelante,  actuar_mariposa,  limpiar },
+    { "zorrita",   false, 24,   30,   6, LED(255, 80, 0),    NEGRO, dibujar_zorrita_atras,   dibujar_zorrita_adelante,   actuar_zorrita,   limpiar },
 };
-
-static bool es_valido(eyes_animal_t a)
-{
-    return a > ANIMAL_NINGUNO && a < CANT_ANIMALES;
-}
-
-// La cara de base de un animal (tamaño y altura de los ojos)
-static cara_t cara_de(eyes_animal_t a)
-{
-    cara_t c = CARA_NORMAL;
-    if (!es_valido(a)) return c;
-    c.ancho = animales[a].ancho;
-    c.alto  = animales[a].alto;
-    c.y     = animales[a].y;
-    return c;
-}
-
-// ─── Lo que usa eyes.c ───────────────────────────────────────────────────────
-
-// Los animales no tienen rulos (el unicornio tiene su crin de arco iris)
-bool animal_lleva_rulos(void)
-{
-    return !es_valido(animal_actual);
-}
-
-void dibujar_animal_atras(float mx, float cy)
-{
-    if (es_valido(animal_actual)) animales[animal_actual].atras(mx, cy);
-}
-
-void dibujar_animal_adelante(float mx, float cy)
-{
-    if (es_valido(animal_actual)) animales[animal_actual].adelante(mx, cy);
-}
-
-// ─── Lo que usa main.c ───────────────────────────────────────────────────────
-
-// Cierra los ojos, cambia de disfraz y los vuelve a abrir
-static void cambiar_a(eyes_animal_t nuevo)
-{
-    cara_t d = cara;
-    d.abre_izq = d.abre_der = 0;
-    animar(d, 150);
-
-    animal_actual = nuevo;
-    hay_estrellas = hay_queso = hay_cola = false;
-    globo = NULL;
-    cara = cara_de(nuevo);
-    cara.abre_izq = cara.abre_der = 0;
-    if (es_valido(nuevo)) poner_led(animales[nuevo].led);
-    else                  poner_led_tranquila();
-    animar(cara_de(nuevo), 200);
-}
-
-void eyes_actuar(eyes_animal_t animal)
-{
-    if (!es_valido(animal)) return;
-    empezar_accion();
-    if (animal != animal_actual) cambiar_a(animal);
-
-    ESP_LOGI(TAG, "Actuando de %s", animales[animal].nombre);
-    animales[animal].actuar();
-    globo = NULL;
-    hay_estrellas = hay_queso = hay_cola = false;
-    arcoiris = false;
-    poner_led(animales[animal].led);
-}
-
-void eyes_sacar_disfraz(void)
-{
-    if (animal_actual == ANIMAL_NINGUNO) return;
-    cambiar_a(ANIMAL_NINGUNO);
-}

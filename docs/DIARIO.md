@@ -14,6 +14,17 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-05 — Modos Fantasia y Ejercicio 🧚⚽
+
+**Que hicimos:** Agregamos dos modos nuevos. En **Fantasia** Flufi hace de personajes de cuentos de hadas: **hada** (con alas y varita), **princesa** (con corona), **sirena** (¡el fondo se vuelve mar!), **dragoncita** (que tira fuego) y **caperucita** (con su capucha roja y su canasta). En **Ejercicio** hace deporte: **patina**, **baila** (con luces de colores), juega al **futbol** (¡gol!), anda en **bici** y levanta **pesas** contando las repeticiones. Todos tienen los ojos, las pestañas y los labios de Flufi, y casi todos sus rulos.
+
+**Que aprendimos:**
+- Ya tenemos 15 personajes, asi que los ordenamos: un archivo por modo (`animales.c`, `fantasia.c` y `ejercicio.c`) y uno con lo que comparten todos (`personajes.c`).
+- Para la sirena cambiamos el **color del fondo** por un azul de mar. Todo lo que se "borra" con el color del fondo (como la rayita entre los labios) tambien se vuelve azul.
+- Las ruedas de la bici y de los patines **giran** porque sus rayitas se dibujan en otro angulo en cada cuadro.
+
+---
+
 ## 2026-11-05 — Nuevos colores y animales sin rulos 🎨
 
 **Que hicimos:** Cambiamos el color del LED de dos emociones: cuando Flufi esta **tranquila** ahora es **rosa**, y cuando se **sorprende** es **celeste**. A la coneja le pusimos el LED **blanco**, como su pelaje, para que no se confunda con el rosa de tranquila. Y decidimos que **los animales no tienen rulos**: la mariposa tambien se los saca y se queda solo con sus antenitas.

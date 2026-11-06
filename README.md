@@ -32,6 +32,8 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | Termina de arrancar | Saluda: se sorprende y se pone contenta, con el LED en **arco iris** 🌈 |
 | Esta tranquila (modo Normal) | Juega con sus emociones, y el **LED de la placa** se prende del color de cada una |
 | Esta en modo **Animales** | Hace de animal: coneja, unicornio, ratoncita, mariposa o zorrita |
+| Esta en modo **Fantasia** | Hace de personaje de cuento: hada, princesa, sirena, dragoncita o caperucita |
+| Esta en modo **Ejercicio** | Hace deporte: patina, baila, juega al futbol, anda en bici o levanta pesas |
 | Cada 5 minutos en punto (x:00, x:05, x:10...) | Su cara se aleja y muestra la **hora** al costado |
 | Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** al costado |
 | Aprietan el **boton A** | Abre el **menu** |
@@ -68,6 +70,26 @@ animales no tienen rulos: en su lugar llevan sus orejas, su cuerno o sus antenas
 | 🦋 Mariposa | Alas de colores y antenitas | Vuela aleteando ("¡Fiu!") y guiña un ojo | violeta |
 | 🦊 Zorrita | Orejas en punta, cachetes blancos y naricita | Mira picara y mueve la cola ("Je je!") | naranja |
 
+### Los cuentos de hadas (modo Fantasia)
+
+| Personaje | Que se le agrega | Que hace | LED |
+|---|---|---|---|
+| 🧚 Hada | Alas transparentes y una varita con estrella | Flota y tira polvo de estrellas ("¡Plin!") | celeste |
+| 👑 Princesa | Corona dorada con piedritas y cachetes rosados | Hace una reverencia y salen corazoncitos ("¡Saludos!") | dorado |
+| 🧜 Sirena | **El fondo se vuelve mar**, con burbujas, algas y una conchita en el pelo | Nada moviendo su cola ("¡Blub!") | turquesa |
+| 🐉 Dragoncita | Cuernitos entre los rulos y alitas verdes | Toma aire ¡y tira fuego! ("¡Grrr!") | rojo fuego, titila |
+| 🧺 Caperucita | Capucha roja con el flequillo asomando y un moño | Camina cantando y muestra su canasta ("¡Abuela!") | rojo |
+
+### El ejercicio (modo Ejercicio)
+
+| Deporte | Que se le agrega | Que hace | LED |
+|---|---|---|---|
+| ⛸️ Patinar | Vincha violeta y patines rosas con rueditas | Se desliza de lado a lado ("¡Wiii!") | celeste |
+| 💃 Bailar | Auriculares rosas y notas musicales | Baila al ritmo y el LED cambia de color como en una fiesta | de colores |
+| ⚽ Futbol | Vincha celeste y blanca y una pelota | Hace jueguito ¡y gol! ("¡Gol!") | verde |
+| 🚲 Bici | Casco rosa y una bici con las ruedas girando | Pedalea y toca el timbre ("¡Rin rin!") | amarillo |
+| 🏋️ Pesas | Vincha rosa y una mancuerna a cada lado | Levanta y cuenta "1", "2", "3" ("¡Fuerte!") | rojo |
+
 ### El menu
 
 | Boton | Que hace |
@@ -78,7 +100,7 @@ animales no tienen rulos: en su lugar llevan sus orejas, su cuerno o sus antenas
 
 | Opcion | Que hay adentro |
 |---|---|
-| **Modo** | **Normal** (emociones) o **Animales**. El modo de ahora tiene un puntito |
+| **Modo** | **Normal** (emociones), **Animales**, **Fantasia** o **Ejercicio**. El modo de ahora tiene un puntito |
 | **Comer** | 🥐 Medialuna, 🧁 Muffin o 🍩 Dona, con su dibujo |
 | **Tomar** | 🍵 Te, 🍓 Licuado o 🥤 Gaseosa, con su dibujo |
 | **Hora** | La hora grande, el dia y la fecha |
