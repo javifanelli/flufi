@@ -14,6 +14,21 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-05 — Emociones de colores 🌈
+
+**Que hicimos:** Flufi aprendio las mismas emociones que Pitri (contenta, sorpresa, enojada, triste, mareada, enamorada, verano, sospecha, sueño...), pero con una diferencia: **cada emocion prende el LED de la placa de un color**. Contenta es naranja, enamorada es rojo, triste es verde, y cuando se duerme el LED se apaga. Cuando saluda, el LED hace **arco iris**.
+
+Sus lentes de sol son **"ojo de gato"**: marco rosa con las puntas para arriba, vidrio color ciruela y una piedrita brillante en cada punta.
+
+Tambien le dejamos listos los dibujos de la comida y la bebida, ¡a color!, para cuando tenga su menu.
+
+**Que aprendimos:**
+- El LED mezcla tres lucecitas: **roja, verde y azul**. Con distintas cantidades de cada una sale cualquier color, igual que en la pantalla.
+- El arco iris es dar la vuelta a la **rueda de colores**: rojo, amarillo, verde, celeste, azul, violeta y otra vez rojo.
+- Ese LED es muy fuerte: lo usamos al 25 % de brillo para que no encandile.
+
+---
+
 ## 2026-11-05 — WiFi, hora y saludo 📶👋
 
 **Que hicimos:**

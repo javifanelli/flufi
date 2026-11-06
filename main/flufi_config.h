@@ -11,6 +11,11 @@
 #define COLOR_OJOS      COLOR(120, 210, 255)   // celeste
 #define COLOR_PESTANAS  COLOR(255, 120, 190)   // rosa
 #define COLOR_TEXTO     COLOR(255, 200, 230)   // rosa clarito
+#define COLOR_BOCA      COLOR(255, 120, 190)   // rosa (como las pestañas)
+
+// Brillo del LED de la placa, de 0 a 100 %. Los colores de cada emocion estan
+// arriba de todo en components/eyes/eyes.c
+#define LED_BRILLO      25
 
 // ─── Saludo al prenderse ─────────────────────────────────────────────────────
 // '\n' = cambiar de renglon. Con tamaño 4 entran 5 letras por renglon.
@@ -30,9 +35,9 @@
 #define ESPERA_HORA_MS          (10 * 1000)  // cuanto espera la hora despues de conectarse
 #define MOSTRAR_SALUDO_MS       3000         // "¡Buen dia!", "¡Buenas tardes!"...
 
-// ─── Parpadeo ────────────────────────────────────────────────────────────────
-// Cada cuanto parpadea (se elige al azar entre estos dos tiempos)
-#define PARPADEO_MIN_MS  2000
-#define PARPADEO_MAX_MS  5000
+// ─── Juegos ───────────────────────────────────────────────────────────────────
+// Descanso entre un juego y otro (se elige un valor al azar en este rango)
+#define DESCANSO_MIN_MS  300
+#define DESCANSO_MAX_MS  1500
 
 #endif // FLUFI_CONFIG_H

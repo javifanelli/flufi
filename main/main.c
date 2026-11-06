@@ -78,7 +78,7 @@ void app_main(void)
 {
     ESP_LOGI(TAG, "¡Hola! Soy Flufi :)");
 
-    led_iniciar();                     // deja apagado el LED de la placa
+    led_iniciar(LED_BRILLO);           // el LED de la placa (arranca apagado)
     display_init();
     wifi_iniciar();                    // se conecta "de fondo"
     reloj_iniciar(ZONA_HORARIA);       // cuando haya WiFi, pone la hora
@@ -87,20 +87,20 @@ void app_main(void)
     mostrar_mensaje(MENSAJE_ARRANQUE);
     mostrar_mensaje(MENSAJE_ARRANQUE_2);
 
-    eyes_init(COLOR_OJOS, COLOR_PESTANAS, COLOR_TEXTO, COLOR_FONDO);
+    eyes_init(COLOR_OJOS, COLOR_PESTANAS, COLOR_BOCA, COLOR_TEXTO, COLOR_FONDO);
     conectarse_y_saludar();
+    eyes_saludar();                    // ¡con el LED en arco iris!
 
     while (1) {
         // Si el WiFi o la hora llegaron tarde, los festeja ahora
         if (!ya_festejo_wifi && wifi_conectado()) festejar_wifi();
         if (ya_festejo_wifi && !ya_saludo_hora && reloj_sincronizado()) saludar_segun_la_hora();
 
-        // Espera un ratito al azar y parpadea (a veces dos veces seguidas)
-        vTaskDelay(pdMS_TO_TICKS(PARPADEO_MIN_MS + esp_random() % (PARPADEO_MAX_MS - PARPADEO_MIN_MS)));
-        eyes_parpadear();
-        if (esp_random() % 4 == 0) {
-            vTaskDelay(pdMS_TO_TICKS(80));
-            eyes_parpadear();
-        }
+        // Juega con sus emociones (cada una prende el LED de un color)
+        eyes_jugar();
+
+        // Un descansito entre juego y juego, y a veces un parpadeo
+        vTaskDelay(pdMS_TO_TICKS(DESCANSO_MIN_MS + esp_random() % (DESCANSO_MAX_MS - DESCANSO_MIN_MS)));
+        if (esp_random() % 2) eyes_parpadear();
     }
 }
