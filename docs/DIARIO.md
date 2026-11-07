@@ -14,6 +14,18 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-06 — ¡Flufi cuenta el tiempo! ☀️🌧️
+
+**Que hicimos:** Ahora Flufi sabe **como esta el tiempo afuera**. Cada media hora (en punto y a las y media) se aleja y cuenta si esta **soleado**, **nublado**, si **llueve**, si hay **tormenta** o si **nieva**, con un dibujo que se mueve: el sol con sus rayos girando, nubes, gotas que caen, un rayo que titila... Abajo dice la temperatura y si hace **frio** o **calor**. El LED tambien se pone del color del tiempo. Tambien se puede ver desde el menu, en **Clima**.
+
+**Que aprendimos:**
+- El tiempo lo sacamos de **Open-Meteo**, un servicio gratis: Flufi le pregunta por internet como esta el tiempo en nuestra zona y le contesta con numeros.
+- El tiempo se describe con un **codigo mundial** (se llama WMO): 0 es despejado, 3 nublado, 61 lluvia, 95 tormenta... Asi todos los servicios del mundo hablan el mismo idioma.
+- **Donde vivimos es un dato privado**, asi que va en un archivo secreto que no se sube, como la clave del WiFi. Y alcanza con la zona del barrio: el tiempo es igual en toda la cuadra.
+- Le agrandamos a Flufi el lugar para el programa (de 1 MB a 1,5 MB), porque la conexion segura ocupa bastante.
+
+---
+
 ## 2026-11-05 — Modos Fantasia y Ejercicio 🧚⚽
 
 **Que hicimos:** Agregamos dos modos nuevos. En **Fantasia** Flufi hace de personajes de cuentos de hadas: **hada** (con alas y varita), **princesa** (con corona), **sirena** (¡el fondo se vuelve mar!), **dragoncita** (que tira fuego) y **caperucita** (con su capucha roja y su canasta). En **Ejercicio** hace deporte: **patina**, **baila** (con luces de colores), juega al **futbol** (¡gol!), anda en **bici** y levanta **pesas** contando las repeticiones. Todos tienen los ojos, las pestañas y los labios de Flufi, y casi todos sus rulos.

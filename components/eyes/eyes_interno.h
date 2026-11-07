@@ -59,6 +59,9 @@ void cerrar_y_abrir(bool izq, bool der, int cerrado_ms);
 void poner_led(color_led_t c);
 void poner_led_tranquila(void);
 void empezar_accion(void);                    // las funciones publicas la llaman al empezar
+// La cara se aleja y al costado aparece "texto" con "dibujo" arriba (el dibujo
+// puede moverse con cara.fase, que va avanzando mientras se ve)
+void decir_con_dibujo(const char *texto, int escala, void (*dibujo)(float cx, float cy), int ms);
 void arco(float cx, float cy, float r, float desde, float hasta, int grosor, color_t c);
 void dibujar_corazon(float cx, float cy, float r, color_t c);
 // Los rulos, pintados con estos colores (de izquierda a derecha, corridos "corrimiento")

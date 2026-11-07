@@ -1,2 +1,5 @@
 CONFIG_IDF_TARGET="esp32c3"
 CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+
+# Mas lugar para el programa (1,5 MB): la conexion segura del pronostico ocupa bastante
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y

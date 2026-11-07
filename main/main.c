@@ -16,6 +16,7 @@
 #include "bmp280.h"
 #include "botones.h"
 #include "menu.h"
+#include "pronostico.h"
 
 static const char *TAG = "FLUFI";
 
@@ -84,13 +85,24 @@ static void decir_sensor(void)
     eyes_decir(texto, 1, MOSTRAR_SENSOR_MS);
 }
 
-// Muestra la hora en x:00, x:05, x:10... y el sensor en x:00, x:15, x:30, x:45.
-// Si todavia no sabe la hora, muestra el sensor cada SENSOR_CADA_MINUTOS
-// contando desde que se prendio. (Igual que Pitri)
+// El tiempo de afuera: un dibujo animado, como esta el cielo, la temperatura
+// y si hace frio o calor. Devuelve false si todavia no hay pronostico.
+static bool contar_clima(void)
+{
+    pronostico_t p;
+    if (!pronostico_ultimo(&p)) return false;
+    eyes_contar_clima(p.codigo, p.temp_decimas, p.es_de_dia, MOSTRAR_CLIMA_MS);
+    return true;
+}
+
+// Muestra la hora en x:00, x:05, x:10..., el sensor en x:00, x:15, x:30, x:45 y
+// el tiempo de afuera en x:00 y x:30. Si todavia no sabe la hora, muestra el
+// sensor cada SENSOR_CADA_MINUTOS contando desde que se prendio. (Como Pitri)
 static void revisar_horarios(void)
 {
     static int ultima_hora_mostrada = -1;      // "minuto del año" de la ultima vez
     static int ultimo_sensor_mostrado = -1;
+    static int ultimo_clima_mostrado = -1;
     static int64_t ultimo_sensor_sin_hora_us = 0;
 
     struct tm t;
@@ -104,6 +116,10 @@ static void revisar_horarios(void)
         if (t.tm_min % SENSOR_CADA_MINUTOS == 0 && este_minuto != ultimo_sensor_mostrado) {
             ultimo_sensor_mostrado = este_minuto;
             decir_sensor();
+        }
+        if (t.tm_min % CLIMA_CADA_MINUTOS == 0 && este_minuto != ultimo_clima_mostrado) {
+            ultimo_clima_mostrado = este_minuto;
+            contar_clima();
         }
     } else {
         int64_t ahora = esp_timer_get_time();
@@ -298,7 +314,7 @@ static void cambiar_modo(modo_t nuevo)
 }
 
 // ─── El menu ─────────────────────────────────────────────────────────────────
-//   Menu:  Modo / Comer / Tomar / Hora / Sensor / Salir
+//   Menu:  Modo / Comer / Tomar / Hora / Sensor / Clima / Salir
 //   Modo:  Normal / Animales / Fantasia / Ejercicio / Atras (el de ahora tiene un puntito)
 //   Comer: Medialuna / Muffin / Dona / Atras (con dibujos)
 //   Tomar: Te / Licuado / Gaseosa / Atras (con dibujos)
@@ -306,8 +322,8 @@ static void cambiar_modo(modo_t nuevo)
 
 static void abrir_menu(void)
 {
-    static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Salir" };
-    enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_SALIR };
+    static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Clima", "Salir" };
+    enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_CLIMA, OPCION_SALIR };
     static const char *const opciones_modo[CANT_MODOS + 1] = { "Normal", "Animales", "Fantasia", "Ejercicio", "Atras" };
 
     ESP_LOGI(TAG, "Abriendo el menu");
@@ -315,7 +331,7 @@ static void abrir_menu(void)
     int marcada = 0;
 
     while (1) {
-        int elegida = menu_elegir("", opciones_menu, 6, marcada, -1, MENU_ESPERA_MAX_MS);
+        int elegida = menu_elegir("", opciones_menu, 7, marcada, -1, MENU_ESPERA_MAX_MS);
         if (elegida >= 0) marcada = elegida;   // al volver, queda marcada la misma
 
         if (elegida == OPCION_MODO) {
@@ -339,6 +355,13 @@ static void abrir_menu(void)
         }
         if (elegida == OPCION_HORA) {
             mostrar_hora();
+            break;
+        }
+        if (elegida == OPCION_CLIMA) {
+            eyes_reiniciar();
+            if (!contar_clima())
+                mostrar_texto(!pronostico_configurado() ? "Sin\npronostico" :
+                              wifi_conectado() ? "Buscando\nel tiempo" : "Sin WiFi", 2500);
             break;
         }
         if (elegida == OPCION_SENSOR) {
@@ -396,6 +419,7 @@ void app_main(void)
     wifi_iniciar();                    // se conecta "de fondo"
     reloj_iniciar(ZONA_HORARIA);       // cuando haya WiFi, pone la hora
     bmp280_iniciar(TIEMPO_ENTRE_LECTURAS_MS);   // temperatura y presion
+    pronostico_iniciar();              // cuando haya WiFi, consulta el tiempo de afuera
     botones_iniciar();                 // A = menu y elegir, B = siguiente, BOOT = atras
     menu_colores(COLOR_FONDO, COLOR_TEXTO, COLOR_PESTANAS, COLOR_FONDO);
 

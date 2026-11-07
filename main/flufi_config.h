@@ -44,6 +44,12 @@
 #define MOSTRAR_SENSOR_MS        6000   // cuanto se ven los datos del sensor
 #define TIEMPO_ENTRE_LECTURAS_MS (10 * 1000)   // cada cuanto lee el sensor
 
+// ─── El tiempo de afuera (pronostico) ────────────────────────────────────────
+// El lugar va en components/pronostico/clima_secretos.h (no se sube al repo).
+// Lo que es "frio" y "calor" esta en components/eyes/clima.c
+#define CLIMA_CADA_MINUTOS       30     // el tiempo en x:00 y x:30
+#define MOSTRAR_CLIMA_MS         6000   // cuanto se ve
+
 // ─── Menu ────────────────────────────────────────────────────────────────────
 // Boton A = abrir el menu y elegir, boton B = siguiente, boton BOOT = volver atras
 #define MENU_ESPERA_MAX_MS  (20 * 1000)   // si nadie toca nada, se cierra solo

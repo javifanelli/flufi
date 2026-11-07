@@ -34,6 +34,13 @@ void eyes_onditas(void);
 // Con escala 2 entran 5 letras por renglon; con escala 1, 9.
 void eyes_decir(const char *texto, int escala, int ms);
 
+// ─── El tiempo de afuera ──────────────────────────────────────────────────────
+// La cara se aleja y al costado aparece un dibujo animado del tiempo y abajo
+// como esta el cielo, la temperatura y si hace frio o calor (los limites estan
+// en components/eyes/clima.c). "codigo" es el codigo del tiempo (WMO) y
+// "temp_decimas" la temperatura en decimas de grado (235 = 23,5 °C).
+void eyes_contar_clima(int codigo, int temp_decimas, bool es_de_dia, int ms);
+
 // ─── Reacciones (con el LED en arco iris) ────────────────────────────────────
 void eyes_saludar(void);               // se sorprende y se pone contenta
 void eyes_decir_que_no(void);          // esta llena: mueve la cabeza diciendo que no

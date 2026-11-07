@@ -30,6 +30,8 @@ static const char *TAG = "OJOS";
 #define LEJOS_X          (-32) // cuanto se corre a la izquierda
 #define COSTADO_DESDE    68   // donde empieza la zona del texto, a la derecha
 #define COSTADO_ANCHO    (LCD_H_RES - COSTADO_DESDE - 2)
+#define COSTADO_DIBUJO_Y 36   // si hay un dibujo al costado (el tiempo): su centro...
+#define COSTADO_TEXTO_Y  66   // ...y donde empieza el texto, abajo del dibujo
 
 // ─── Color del LED para cada emocion (¡jueguen con estos colores!) ───────────
 // LED(rojo, verde, azul), de 0 a 255
@@ -68,6 +70,7 @@ color_t color_fondo, color_fondo_normal;
 static color_t color_ojos, color_pestanas, color_boca, color_texto;
 
 static char texto_costado[64];        // texto al costado de la cara (eyes_decir)
+static void (*dibujo_costado)(float cx, float cy) = NULL;   // dibujo arriba del texto (o NULL)
 static int  texto_escala = 2;
 
 // Tamaño de la cara en este cuadro: 1 = normal, mas chico = mas lejos.
@@ -558,7 +561,12 @@ static void dibujar(void)
         // El texto entra deslizandose desde la derecha
         int centro = COSTADO_DESDE + COSTADO_ANCHO / 2;
         int x = (int)(centro + (LCD_H_RES - COSTADO_DESDE) * (1 - cara.texto));
-        display_draw_text_centered_at(texto_costado, x, -1, texto_escala, color_texto);
+        if (dibujo_costado != NULL) {               // con dibujo: el dibujo arriba y el texto abajo
+            dibujo_costado(x, COSTADO_DIBUJO_Y);
+            display_draw_text_centered_at(texto_costado, x, COSTADO_TEXTO_Y, texto_escala, color_texto);
+        } else {
+            display_draw_text_centered_at(texto_costado, x, -1, texto_escala, color_texto);
+        }
     }
     if (globo != NULL) dibujar_globo(globo);
 
@@ -981,26 +989,36 @@ void eyes_onditas(void)
     }
 }
 
-void eyes_decir(const char *texto, int escala, int ms)
+// La cara se aleja y al costado aparece el texto (y, si hay, un dibujo arriba)
+void decir_con_dibujo(const char *texto, int escala, void (*dibujo)(float cx, float cy), int ms)
 {
     cortado = false;
     eyes_sacar_disfraz();
     snprintf(texto_costado, sizeof(texto_costado), "%s", texto);
 
     // Si no entra al costado, usa letras mas chicas
+    int alto_max = (dibujo != NULL) ? LCD_V_RES - COSTADO_TEXTO_Y - 2 : LCD_V_RES - 8;
     while (escala > 1 && (display_text_width(texto_costado, escala) > COSTADO_ANCHO ||
-                          display_text_height(texto_costado, escala) > LCD_V_RES - 8))
+                          display_text_height(texto_costado, escala) > alto_max))
         escala--;
     texto_escala = escala;
+    dibujo_costado = dibujo;
 
     // La cara se aleja hacia la izquierda y el texto entra por la derecha
     cara_t d = cara_lejos();
     d.ondas = 0;
     d.texto = 1;
     animar(d, 500);
-    esperar(ms / 2);
-    if (!cortado) cerrar_y_abrir(true, true, 40);   // un parpadeo, para que se vea viva
-    esperar(ms / 2);
+    if (dibujo != NULL) {
+        // Con dibujo, "fase" sigue avanzando para que el dibujo se mueva
+        d = cara; d.fase += ms / 2000.0f; animar(d, ms / 2);
+        if (!cortado) cerrar_y_abrir(true, true, 40);   // un parpadeo, para que se vea viva
+        d = cara; d.fase += ms / 2000.0f; animar(d, ms / 2);
+    } else {
+        esperar(ms / 2);
+        if (!cortado) cerrar_y_abrir(true, true, 40);
+        esperar(ms / 2);
+    }
 
     // El texto se va y la cara vuelve
     d = cara;
@@ -1008,6 +1026,12 @@ void eyes_decir(const char *texto, int escala, int ms)
     d.lejos = 0;
     d.texto = 0;
     animar(d, 400);
+    dibujo_costado = NULL;
+}
+
+void eyes_decir(const char *texto, int escala, int ms)
+{
+    decir_con_dibujo(texto, escala, NULL, ms);
 }
 
 // ─── Reacciones con arco iris ────────────────────────────────────────────────
