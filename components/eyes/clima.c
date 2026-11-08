@@ -134,6 +134,20 @@ static void dibujar_tiempo(float x, float y)
     }
 }
 
+// Una palabra cortita (un solo renglon) para contarselo a otro de la familia
+const char *eyes_palabra_clima(int codigo, bool es_de_dia)
+{
+    switch (cielo_de(codigo)) {
+    case CIELO_DESPEJADO:     return es_de_dia ? "Soleado" : "Despejado";
+    case CIELO_ALGUNAS_NUBES: return "Nubes";
+    case CIELO_NUBLADO:       return "Nublado";
+    case CIELO_NIEBLA:        return "Neblina";
+    case CIELO_LLUVIA:        return "Lluvia";
+    case CIELO_TORMENTA:      return "Tormenta";
+    default:                  return "Nieve";
+    }
+}
+
 // ─── Contarlo ────────────────────────────────────────────────────────────────
 
 void eyes_contar_clima(int codigo, int temp_decimas, bool es_de_dia, int ms)

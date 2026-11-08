@@ -21,8 +21,12 @@ void eyes_reiniciar(void);
 // Un parpadeo (cierra y abre los ojos, ~200 ms)
 void eyes_parpadear(void);
 
-// Elige un juego (emocion) al azar y lo hace (la funcion vuelve cuando termina)
-void eyes_jugar(void);
+// Elige un juego (emocion) al azar y lo hace (la funcion vuelve cuando termina).
+// Devuelve el nombre del juego que hizo ("llorar", "contento"...).
+const char *eyes_jugar(void);
+
+// Hace el juego que se llama "nombre" (por ejemplo "mareado"). false si no existe.
+bool eyes_jugar_juego(const char *nombre);
 
 // Un "paso" (~1,2 s) de la cara alejada mirando las ondas de WiFi, que se van
 // encendiendo de a una. Llamarla una y otra vez mientras se conecta.
@@ -41,8 +45,13 @@ void eyes_decir(const char *texto, int escala, int ms);
 // "temp_decimas" la temperatura en decimas de grado (235 = 23,5 °C).
 void eyes_contar_clima(int codigo, int temp_decimas, bool es_de_dia, int ms);
 
+// Como esta el cielo en una palabra cortita ("Soleado", "Lluvia"...), para
+// contarselo a otro de la familia
+const char *eyes_palabra_clima(int codigo, bool es_de_dia);
+
 // ─── Reacciones (con el LED en arco iris) ────────────────────────────────────
 void eyes_saludar(void);               // se sorprende y se pone contenta
+void eyes_enamorarse(void);            // ojos de corazon y corazoncitos (cuando le mandan un beso)
 void eyes_decir_que_no(void);          // esta llena: mueve la cabeza diciendo que no
 void eyes_comer(comida_t comida);      // 3 mordiscos y "¡Rico!"
 void eyes_tomar(comida_t bebida);      // 3 sorbos y "Ahh!"

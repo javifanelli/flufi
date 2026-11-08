@@ -2,6 +2,7 @@
 #include "led.h"
 
 #include <stdio.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_random.h"
@@ -947,7 +948,7 @@ void eyes_parpadear(void)
     cerrar_y_abrir(true, true, 40);
 }
 
-void eyes_jugar(void)
+const char *eyes_jugar(void)
 {
     cortado = false;
     eyes_sacar_disfraz();
@@ -960,11 +961,28 @@ void eyes_jugar(void)
             ESP_LOGI(TAG, "Juego: %s", juegos[i].nombre);
             juegos[i].hacer();
             poner_led(LED_TRANQUILA);
-            return;
+            return juegos[i].nombre;
         }
         r -= juegos[i].peso;
     }
+    return "";
 }
+
+bool eyes_jugar_juego(const char *nombre)
+{
+    for (int i = 0; i < CANT_JUEGOS; i++) {
+        if (strcmp(juegos[i].nombre, nombre) == 0) {
+            ESP_LOGI(TAG, "Juego (pedido): %s", juegos[i].nombre);
+            cortado = false;
+            eyes_sacar_disfraz();
+            juegos[i].hacer();
+            poner_led(LED_TRANQUILA);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 // La cara "alejada": chiquita, a la izquierda, con lugar a la derecha
 static cara_t cara_lejos(void)
@@ -1046,6 +1064,14 @@ void eyes_saludar(void)
     juego_sorpresa();
     juego_contento();
     arcoiris = false;
+    poner_led(LED_TRANQUILA);
+}
+
+void eyes_enamorarse(void)
+{
+    cortado = false;
+    eyes_sacar_disfraz();
+    juego_enamorado();
     poner_led(LED_TRANQUILA);
 }
 

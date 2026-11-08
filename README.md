@@ -36,6 +36,9 @@ La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 | Esta en modo **Ejercicio** | Hace deporte: patina, baila, juega al futbol, anda en bici o levanta pesas |
 | Cada 5 minutos en punto (x:00, x:05, x:10...) | Su cara se aleja y muestra la **hora** al costado |
 | Cada 15 minutos en punto (x:00, x:15, x:30, x:45) | Muestra la **temperatura** y la **presion del aire** al costado |
+| Se conecta **Pitri** (u otro de la familia) | Lo saluda: **"¡Hola Pitri!"** |
+| Pitri le manda un **beso** | Ojos de corazon, corazoncitos y **"¡Un beso de Pitri!"** 😍 |
+| Cada tanto, con Pitri conectado | **Charlan** por turnos o **juegan juntos** (ver [docs/FAMILIA.md](docs/FAMILIA.md)) |
 | Cada media hora (x:00 y x:30) | Cuenta **el tiempo de afuera**: si esta soleado, nublado, si llueve, y si hace frio o calor ☀️☁️🌧️ |
 | Aprietan el **boton A** | Abre el **menu** |
 
@@ -107,6 +110,7 @@ animales no tienen rulos: en su lugar llevan sus orejas, su cuerno o sus antenas
 | **Hora** | La hora grande, el dia y la fecha |
 | **Sensor** | La temperatura y la presion del aire |
 | **Clima** | El tiempo de afuera, con su dibujo |
+| **Familia** | Elegis a alguien de la familia (los que estan conectados) y que hacerle: **Beso**, **Cosquis**, **Convidar**, **Charlar** o **Jugar**. Ver [docs/FAMILIA.md](docs/FAMILIA.md) |
 | **Salir** | Vuelve a la cara de Flufi |
 
 Flufi puede comer 3 veces y tomar 3 veces por hora. Si le dan mas, dice **"No, gracias!

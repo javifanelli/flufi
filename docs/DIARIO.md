@@ -14,6 +14,30 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-07 — La familia charla y juega 🗨️🎲
+
+**Que hicimos:** Pitri y Flufi ahora hacen muchas mas cosas juntos. Cada tanto **charlan**: uno pregunta "¿Como estas?" en su pantalla y el otro le contesta en la suya, por turnos. Tambien **juegan juntos** (los dos se marean, o se ponen los lentes, a la vez). Si uno llora, el otro lo **consuela** y le manda un beso. Cuando el sensor de Pitri ve a alguien, Flufi tambien saluda; cuando a Pitri le llega un mensaje, Flufi avisa; y cuando Pitri se duerme, a Flufi le da sueño. Ademas se cuentan cosas: Flufi le pasa a Pitri el tiempo de afuera y Pitri le pasa a Flufi la humedad. En el menu, **Familia** deja elegir a alguien y mandarle un beso, hacerle cosquillas, convidarle algo, charlar o jugar.
+
+**Que aprendimos:**
+- Por WiFi un mensaje **se puede perder**. Para que no pase, cada mensaje se manda **3 veces** con un numero, y el que lo recibe tira los repetidos.
+- El WiFi tiene un modo de **ahorro de energia** en el que la placa "dormita" y se pierde mensajes. Lo apagamos para que se escuchen mejor.
+- Las charlas son como una **obra de teatro**: estan escritas en una lista igual en los dos, y cada uno dice su parte cuando le toca.
+
+---
+
+## 2026-11-07 — ¡Pitri y Flufi se hablan! 💬
+
+**Que hicimos:** Pitri y Flufi ahora son una **familia** y se mandan mensajitos por el WiFi de la casa. Cuando uno se conecta, el otro lo saluda ("¡Hola Pitri!", "¡Hola Flufi!"). Y desde el menu, en **Beso**, uno le puede mandar un beso al otro: al que lo recibe se le ponen los ojos de corazon. Lo armamos pensando en que mañana se sumen mas personajes a la familia.
+
+**Que aprendimos:**
+- Se hablan con **UDP**: mensajitos cortos que viajan por la red, como papelitos que se pasan. Cada uno dice quien lo manda, para quien es y que es.
+- Un mensaje "para todos" se manda por **broadcast**: le llega a todos los aparatos de la red a la vez, como cuando se grita en el patio.
+- Todos los mensajes llevan una **palabra secreta** de la familia: si un mensaje no la tiene, no le hacen caso.
+- Cada 30 segundos cada uno avisa "¡estoy aca!", asi saben quien esta conectado.
+- Si a uno le llega un mensaje que no conoce, lo ignora: asi los personajes nuevos pueden inventar mensajes nuevos sin que los viejos se confundan.
+
+---
+
 ## 2026-11-06 — ¡Flufi cuenta el tiempo! ☀️🌧️
 
 **Que hicimos:** Ahora Flufi sabe **como esta el tiempo afuera**. Cada media hora (en punto y a las y media) se aleja y cuenta si esta **soleado**, **nublado**, si **llueve**, si hay **tormenta** o si **nieva**, con un dibujo que se mueve: el sol con sus rayos girando, nubes, gotas que caen, un rayo que titila... Abajo dice la temperatura y si hace **frio** o **calor**. El LED tambien se pone del color del tiempo. Tambien se puede ver desde el menu, en **Clima**.

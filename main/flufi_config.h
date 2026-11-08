@@ -50,6 +50,15 @@
 #define CLIMA_CADA_MINUTOS       30     // el tiempo en x:00 y x:30
 #define MOSTRAR_CLIMA_MS         6000   // cuanto se ve
 
+// ─── La familia (Pitri, Flufi, ...) ──────────────────────────────────────────
+// La palabra secreta va en components/familia/familia_secretos.h (no se sube al repo)
+#define MI_NOMBRE           "Flufi"   // como la conocen los demas (sin espacios)
+#define MOSTRAR_FAMILIA_MS  3000      // cuanto se ve "¡Hola Pitri!", "¡Un beso de Pitri!"...
+// Cada cuanto empieza una charla o un juego con alguien de la familia (al azar
+// entre estos dos tiempos, en segundos)
+#define FAMILIA_INICIATIVA_MIN_S  (4 * 60)
+#define FAMILIA_INICIATIVA_MAX_S  (10 * 60)
+
 // ─── Menu ────────────────────────────────────────────────────────────────────
 // Boton A = abrir el menu y elegir, boton B = siguiente, boton BOOT = volver atras
 #define MENU_ESPERA_MAX_MS  (20 * 1000)   // si nadie toca nada, se cierra solo

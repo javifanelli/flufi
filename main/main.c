@@ -2,6 +2,7 @@
 #include "freertos/task.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "esp_log.h"
 #include "esp_random.h"
 #include "esp_timer.h"
@@ -17,6 +18,7 @@
 #include "botones.h"
 #include "menu.h"
 #include "pronostico.h"
+#include "familia.h"
 
 static const char *TAG = "FLUFI";
 
@@ -33,10 +35,13 @@ static void mostrar_mensaje(const char *texto)
     vTaskDelay(pdMS_TO_TICKS(MENSAJE_ARRANQUE_MS));
 }
 
-// Para que los ojos corten lo que estan haciendo apenas se aprieta el boton A
+static bool atendiendo_familia = false;   // true mientras reacciona a lo que le dijo la familia
+
+// ¿Hay que cortar lo que esta haciendo? Si aprietan el boton A (menu) o si le
+// hablo alguien de la familia (salvo que ya este contestandole a alguien).
 static bool boton_menu_apretado(void)
 {
-    return botones_pendiente(BOTON_A);
+    return botones_pendiente(BOTON_A) || (!atendiendo_familia && familia_hay_evento());
 }
 
 // "Tengo wifi!" al costado de la cara (solo la primera vez que se conecta)
@@ -95,6 +100,16 @@ static bool contar_clima(void)
     return true;
 }
 
+// Le cuenta el tiempo de afuera a la familia (Pitri no tiene pronostico)
+static void compartir_clima(void)
+{
+    pronostico_t p;
+    if (!pronostico_ultimo(&p)) return;
+    char dato[32];
+    snprintf(dato, sizeof(dato), "%d %s", p.temp_decimas, eyes_palabra_clima(p.codigo, p.es_de_dia));
+    familia_mandar("*", FAMILIA_CLIMA, dato);
+}
+
 // Muestra la hora en x:00, x:05, x:10..., el sensor en x:00, x:15, x:30, x:45 y
 // el tiempo de afuera en x:00 y x:30. Si todavia no sabe la hora, muestra el
 // sensor cada SENSOR_CADA_MINUTOS contando desde que se prendio. (Como Pitri)
@@ -119,7 +134,7 @@ static void revisar_horarios(void)
         }
         if (t.tm_min % CLIMA_CADA_MINUTOS == 0 && este_minuto != ultimo_clima_mostrado) {
             ultimo_clima_mostrado = este_minuto;
-            contar_clima();
+            if (contar_clima()) compartir_clima();
         }
     } else {
         int64_t ahora = esp_timer_get_time();
@@ -275,6 +290,191 @@ static void dibujar_opcion(const comida_t *lista, const char *const *nombres, in
 static void dibujar_opcion_comida(int opcion) { dibujar_opcion(comidas, nombres_comidas, CANT_COMIDAS, opcion); }
 static void dibujar_opcion_bebida(int opcion) { dibujar_opcion(bebidas, nombres_bebidas, CANT_BEBIDAS, opcion); }
 
+// ─── La familia (Pitri, Flufi, ...) ──────────────────────────────────────────
+// Los personajes de la casa se hablan por la red WiFi (ver docs/FAMILIA.md).
+
+static int64_t proxima_iniciativa_us = 0;   // cuando le toca empezar una charla o un juego
+
+// Dice algo de la familia al costado de la cara
+static void decir_familia(const char *texto)
+{
+    eyes_decir(texto, 2, MOSTRAR_FAMILIA_MS);
+}
+
+// La cara que acompaña a un renglon de una charla
+static void emocionarse(familia_emocion_t emocion)
+{
+    switch (emocion) {
+    case FAMILIA_EMOCION_CONTENTA:
+    case FAMILIA_EMOCION_RISA: eyes_jugar_juego("contento"); break;
+    case FAMILIA_EMOCION_AMOR: eyes_enamorarse();             break;
+    default:                                                  break;
+    }
+}
+
+// Dice el renglon "renglon" de la charla y le pasa el turno a "con"
+static void decir_renglon(int charla, int renglon, const char *con)
+{
+    familia_emocion_t emocion;
+    const char *texto = familia_charla(charla, renglon, &emocion);
+    if (texto == NULL) return;
+    decir_familia(texto);
+    emocionarse(emocion);
+    if (familia_charla(charla, renglon + 1, NULL) != NULL) {      // si sigue, le toca al otro
+        char dato[16];
+        snprintf(dato, sizeof(dato), "%d %d", charla, renglon + 1);
+        familia_mandar(con, FAMILIA_CHARLA, dato);
+    }
+}
+
+static void empezar_charla(const char *con)
+{
+    ESP_LOGI(TAG, "Empiezo una charla con %s", con);
+    bool antes = atendiendo_familia;
+    atendiendo_familia = true;          // que no se corte lo que dice
+    decir_renglon((int)(esp_random() % familia_cant_charlas()), 0, con);
+    atendiendo_familia = antes;
+}
+
+// Le propone un juego a "con" y lo hacen los dos a la vez
+static void jugar_con(const char *con)
+{
+    const char *juego = familia_juego_junto((int)(esp_random() % familia_cant_juegos_juntos()));
+    ESP_LOGI(TAG, "Juego a \"%s\" con %s", juego, con);
+    familia_mandar(con, FAMILIA_JUGAR, juego);
+    bool antes = atendiendo_familia;
+    atendiendo_familia = true;          // que no se corte el juego
+    eyes_jugar_juego(juego);
+    atendiendo_familia = antes;
+}
+
+// Cada tanto, si hay alguien conectado, empieza una charla o un juego
+static void iniciativa_familia(void)
+{
+    int64_t ahora = esp_timer_get_time();
+    int64_t espera = (FAMILIA_INICIATIVA_MIN_S +
+                      esp_random() % (FAMILIA_INICIATIVA_MAX_S - FAMILIA_INICIATIVA_MIN_S)) * 1000000LL;
+    if (proxima_iniciativa_us == 0) proxima_iniciativa_us = ahora + espera;
+    if (ahora < proxima_iniciativa_us) return;
+    proxima_iniciativa_us = ahora + espera;
+
+    char con[FAMILIA_MAX_NOMBRE];
+    if (!familia_alguien_al_azar(con)) return;
+    if (esp_random() % 3 == 0) jugar_con(con);       // a veces juegan, y mas seguido charlan
+    else                       empezar_charla(con);
+}
+
+// Reacciona a lo que le dijeron los demas
+static void atender_familia(void)
+{
+    familia_evento_t e;
+    char texto[64];
+    atendiendo_familia = true;          // mientras reacciona, lo que llega espera su turno
+    while (familia_proximo_evento(&e)) {
+        switch (e.tipo) {
+        case FAMILIA_HOLA:
+        case FAMILIA_SALUDO:
+            eyes_saludar();
+            snprintf(texto, sizeof(texto), "¡Hola\n%s!", e.de);
+            decir_familia(texto);
+            break;
+        case FAMILIA_BESO:
+            eyes_enamorarse();
+            snprintf(texto, sizeof(texto), "¡Un beso\nde\n%s!", e.de);
+            decir_familia(texto);
+            break;
+        case FAMILIA_CHARLA: {
+            int charla, renglon;
+            if (sscanf(e.dato, "%d %d", &charla, &renglon) == 2) decir_renglon(charla, renglon, e.de);
+            break;
+        }
+        case FAMILIA_VISITA:
+            eyes_saludar();
+            decir_familia("¡Llego\nalguien!");
+            break;
+        case FAMILIA_COMIDA:
+            snprintf(texto, sizeof(texto), "¡Gracias\n%s!", e.de);
+            decir_familia(texto);
+            eyes_comer(comidas[esp_random() % CANT_COMIDAS]);
+            break;
+        case FAMILIA_COSQUILLAS:
+            eyes_jugar_juego("contento");
+            snprintf(texto, sizeof(texto), "¡Jaja!\n¡Basta,\n%s!", e.de);
+            decir_familia(texto);
+            break;
+        case FAMILIA_JUGAR:
+            eyes_jugar_juego(e.dato);       // el mismo juego que el otro, a la vez
+            break;
+        case FAMILIA_TRISTE:                // ¡a consolarlo!
+            snprintf(texto, sizeof(texto), "¡No\nllores,\n%s!", e.de);
+            decir_familia(texto);
+            familia_mandar(e.de, FAMILIA_BESO, NULL);
+            break;
+        case FAMILIA_CLIMA: {               // el tiempo de afuera, que le cuenta otro
+            int t;
+            char cielo[20];
+            if (sscanf(e.dato, "%d %19s", &t, cielo) == 2) {
+                int grados = (t + (t >= 0 ? 5 : -5)) / 10;
+                snprintf(texto, sizeof(texto), "Afuera:\n%s\n%d°C", cielo, grados);
+                decir_familia(texto);
+            }
+            break;
+        }
+        case FAMILIA_SENSOR: {              // lo que mide el sensor de otro
+            int t, h;
+            if (sscanf(e.dato, "%d %d", &t, &h) == 2) {
+                snprintf(texto, sizeof(texto), "%s:\nHumedad\n%d%%", e.de, h);
+                decir_familia(texto);
+            }
+            break;
+        }
+        case FAMILIA_MENSAJE:
+            snprintf(texto, sizeof(texto), "¡%s\ntiene un\nmensaje!", e.de);
+            decir_familia(texto);
+            break;
+        case FAMILIA_DORMIR:
+            eyes_jugar_juego("sueno");      // le da sueño a el tambien
+            snprintf(texto, sizeof(texto), "%s se\ndurmio", e.de);
+            decir_familia(texto);
+            break;
+        default:
+            break;
+        }
+    }
+    atendiendo_familia = false;
+}
+
+// Desde el menu: elegir a alguien de la familia y que hacerle
+static void menu_familia(void)
+{
+    if (!familia_configurada()) {
+        mostrar_texto("Sin\nfamilia", 2000);
+        return;
+    }
+    static char nombres[FAMILIA_MAX_MIEMBROS][FAMILIA_MAX_NOMBRE];
+    int n = familia_conectados(nombres, FAMILIA_MAX_MIEMBROS);
+    if (n == 0) {
+        mostrar_texto("No hay\nnadie\nconectado", 2000);
+        return;
+    }
+    const char *opciones[FAMILIA_MAX_MIEMBROS + 1];
+    for (int i = 0; i < n; i++) opciones[i] = nombres[i];
+    opciones[n] = "Atras";
+    int quien = menu_elegir("Familia", opciones, n + 1, 0, -1, MENU_ESPERA_MAX_MS);
+    if (quien < 0 || quien >= n) return;                 // "Atras" o se cerro solo
+    const char *con = nombres[quien];
+
+    static const char *const acciones[] = { "Beso", "Cosquis", "Convidar", "Charlar", "Jugar", "Atras" };
+    switch (menu_elegir(con, acciones, 6, 0, -1, MENU_ESPERA_MAX_MS)) {
+    case 0: familia_mandar(con, FAMILIA_BESO, NULL);       mostrar_texto("¡Beso\nenviado!", 1500);  break;
+    case 1: familia_mandar(con, FAMILIA_COSQUILLAS, NULL); mostrar_texto("¡Cosqui\ncosqui!", 1500); break;
+    case 2: familia_mandar(con, FAMILIA_COMIDA, NULL);     mostrar_texto("¡Le\nconvide!", 1500);    break;
+    case 3: eyes_reiniciar(); empezar_charla(con); break;
+    case 4: eyes_reiniciar(); jugar_con(con);      break;
+    default: break;
+    }
+}
+
 // ─── Modos ───────────────────────────────────────────────────────────────────
 // En el modo Normal Flufi juega con sus emociones. En los otros hace de
 // personaje (siempre con sus ojos, sus pestañas y sus labios).
@@ -314,7 +514,7 @@ static void cambiar_modo(modo_t nuevo)
 }
 
 // ─── El menu ─────────────────────────────────────────────────────────────────
-//   Menu:  Modo / Comer / Tomar / Hora / Sensor / Clima / Salir
+//   Menu:  Modo / Comer / Tomar / Hora / Sensor / Clima / Familia / Salir
 //   Modo:  Normal / Animales / Fantasia / Ejercicio / Atras (el de ahora tiene un puntito)
 //   Comer: Medialuna / Muffin / Dona / Atras (con dibujos)
 //   Tomar: Te / Licuado / Gaseosa / Atras (con dibujos)
@@ -322,8 +522,8 @@ static void cambiar_modo(modo_t nuevo)
 
 static void abrir_menu(void)
 {
-    static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Clima", "Salir" };
-    enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_CLIMA, OPCION_SALIR };
+    static const char *const opciones_menu[] = { "Modo", "Comer", "Tomar", "Hora", "Sensor", "Clima", "Familia", "Salir" };
+    enum { OPCION_MODO, OPCION_COMER, OPCION_TOMAR, OPCION_HORA, OPCION_SENSOR, OPCION_CLIMA, OPCION_FAMILIA, OPCION_SALIR };
     static const char *const opciones_modo[CANT_MODOS + 1] = { "Normal", "Animales", "Fantasia", "Ejercicio", "Atras" };
 
     ESP_LOGI(TAG, "Abriendo el menu");
@@ -331,7 +531,7 @@ static void abrir_menu(void)
     int marcada = 0;
 
     while (1) {
-        int elegida = menu_elegir("", opciones_menu, 7, marcada, -1, MENU_ESPERA_MAX_MS);
+        int elegida = menu_elegir("", opciones_menu, 8, marcada, -1, MENU_ESPERA_MAX_MS);
         if (elegida >= 0) marcada = elegida;   // al volver, queda marcada la misma
 
         if (elegida == OPCION_MODO) {
@@ -355,6 +555,10 @@ static void abrir_menu(void)
         }
         if (elegida == OPCION_HORA) {
             mostrar_hora();
+            break;
+        }
+        if (elegida == OPCION_FAMILIA) {
+            menu_familia();
             break;
         }
         if (elegida == OPCION_CLIMA) {
@@ -406,7 +610,7 @@ static void conectarse_y_saludar(void)
 // Un descansito, pero corta si aprietan el boton del menu
 static void descansar(int ms)
 {
-    for (int t = 0; t < ms && !botones_pendiente(BOTON_A); t += 50)
+    for (int t = 0; t < ms && !botones_pendiente(BOTON_A) && !familia_hay_evento(); t += 50)
         vTaskDelay(pdMS_TO_TICKS(50));
 }
 
@@ -420,6 +624,7 @@ void app_main(void)
     reloj_iniciar(ZONA_HORARIA);       // cuando haya WiFi, pone la hora
     bmp280_iniciar(TIEMPO_ENTRE_LECTURAS_MS);   // temperatura y presion
     pronostico_iniciar();              // cuando haya WiFi, consulta el tiempo de afuera
+    familia_iniciar(MI_NOMBRE);        // cuando haya WiFi, saluda a la familia y la escucha
     botones_iniciar();                 // A = menu y elegir, B = siguiente, BOOT = atras
     menu_colores(COLOR_FONDO, COLOR_TEXTO, COLOR_PESTANAS, COLOR_FONDO);
 
@@ -441,6 +646,11 @@ void app_main(void)
             continue;
         }
 
+        // Lo que le dijeron los demas de la familia (saludos, besos, charlas...)
+        atender_familia();
+        // Y cada tanto, Flufi empieza una charla o un juego
+        iniciativa_familia();
+
         // Si el WiFi o la hora llegaron tarde, los festeja ahora
         if (!ya_festejo_wifi && wifi_conectado()) festejar_wifi();
         if (ya_festejo_wifi && !ya_saludo_hora && reloj_sincronizado()) saludar_segun_la_hora();
@@ -450,7 +660,7 @@ void app_main(void)
 
         // Juega con sus emociones (modo Normal) o hace de personaje (los otros modos)
         if (modo != MODO_NORMAL) eyes_actuar(elegir_personaje());
-        else                       eyes_jugar();
+        else if (strcmp(eyes_jugar(), "llorar") == 0) familia_mandar("*", FAMILIA_TRISTE, NULL);   // ¡que la consuelen!
 
         // Un descansito entre juego y juego, y a veces un parpadeo
         descansar(DESCANSO_MIN_MS + esp_random() % (DESCANSO_MAX_MS - DESCANSO_MIN_MS));
