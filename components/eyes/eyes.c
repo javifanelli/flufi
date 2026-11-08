@@ -58,6 +58,9 @@ static const char *TAG = "OJOS";
 #define COLOR_PELO      COLOR(255, 205, 70)    // rulos rubios
 #define COLOR_PELO_SOMBRA COLOR(200, 135, 30)  // la vueltita de cada rulo
 #define COLOR_PELO_BRILLO COLOR(255, 245, 180) // el brillo del pelo
+#define COLOR_MONO      COLOR(255, 105, 180)   // el moño de la frente (rosa)
+#define COLOR_MONO_OSCURO COLOR(200, 50, 130)  // los pliegues del moño
+#define COLOR_MONO_BRILLO COLOR(255, 190, 225) // el brillito del moño
 #define COLOR_LABIOS_BRILLO COLOR(255, 170, 180) // el brillito del lapiz labial
 #define COLOR_GLOBO     BLANCO                 // globito de lo que dice
 #define COLOR_GLOBO_TEXTO COLOR(150, 20, 70)
@@ -320,6 +323,36 @@ static void dibujar_pelo(void)
     dibujar_rulos_de_colores(rubio, 1, 0, COLOR_PELO_SOMBRA);
 }
 
+/*
+ * El moño rosa en la frente, atado al flequillo: dos "alas" (triangulos con la
+ * punta redondeada), el nudo en el medio y dos cintitas que cuelgan. Se mueve
+ * con el pelo y se achica cuando la cara se aleja.
+ */
+static void dibujar_mono(void)
+{
+    const float medio = LCD_V_RES / 2.0f;
+    float x = LCD_H_RES / 2.0f + cara.x * (0.5f + 0.5f * cara.lejos);
+    float y = medio + (22 - medio) * z + cara.y * (0.3f + 0.7f * cara.lejos);
+#define M(n) ((int)((n) * z))
+    int cx = (int)x, cy = (int)y;
+
+    // Cintitas que cuelgan del nudo
+    display_fill_triangle(cx - M(1), cy + M(2), cx - M(5), cy + M(12), cx - M(9), cy + M(10), COLOR_MONO_OSCURO);
+    display_fill_triangle(cx + M(1), cy + M(2), cx + M(5), cy + M(12), cx + M(9), cy + M(10), COLOR_MONO_OSCURO);
+
+    for (int lado = -1; lado <= 1; lado += 2) {
+        // Cada ala: un triangulo desde el nudo hacia afuera, con la punta redondeada
+        display_fill_triangle(cx, cy, cx + lado * M(14), cy - M(8), cx + lado * M(14), cy + M(8), COLOR_MONO);
+        display_fill_circle(cx + lado * M(13), cy, M(7), COLOR_MONO);
+        // Un pliegue mas oscuro adentro, para que se vea "atado"
+        display_fill_triangle(cx + lado * M(3), cy, cx + lado * M(10), cy - M(3), cx + lado * M(10), cy + M(3),
+                              COLOR_MONO_OSCURO);
+    }
+    display_fill_round_rect(cx - M(4), cy - M(5), M(8) > 2 ? M(8) : 2, M(10) > 2 ? M(10) : 2, M(3), COLOR_MONO);   // nudo
+    display_fill_rect(cx - M(10), cy - M(5), M(3) > 1 ? M(3) : 1, M(2) > 1 ? M(2) : 1, COLOR_MONO_BRILLO);         // brillito
+#undef M
+}
+
 // Globito de dialogo arriba a la derecha (lo que dice mientras come, etc.)
 static void dibujar_globo(const char *texto)
 {
@@ -532,6 +565,7 @@ static void dibujar(void)
 
     display_clear(color_fondo);
     if (personaje_lleva_rulos()) dibujar_pelo();
+    if (personaje_actual == PERSONAJE_NINGUNO) dibujar_mono();   // el moño es de Flufi (los disfraces no lo llevan)
     dibujar_personaje_atras(mx, cy);           // orejas, alas, sombrero... (si hace de personaje)
     dibujar_ojo(cx_izq, cy, cara.ancho * z, cara.alto * z * (1 - p), cara.abre_izq, -1);
     dibujar_ojo(cx_der, cy, cara.ancho * z, cara.alto * z * (1 + p), cara.abre_der, +1);

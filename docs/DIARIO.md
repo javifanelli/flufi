@@ -14,6 +14,15 @@ Lo mas nuevo va arriba.
 
 ---
 
+## 2026-11-08 — Un moño rosa 🎀
+
+**Que hicimos:** Le pusimos a Flufi un **moño rosa en la frente**, atado al flequillo de rulos. Tiene dos alas, un nudo en el medio, dos cintitas que cuelgan y un brillito. Se mueve con el pelo cuando Flufi mira para los costados, y se achica cuando la cara se aleja. Cuando Flufi se disfraza (de animal, de hada...), se lo saca.
+
+**Que aprendimos:**
+- Un moño se arma con **triangulos**: cada ala es un triangulo que sale del nudo, con un circulo en la punta para que quede redondeada, y un triangulo mas oscuro adentro que hace de pliegue.
+
+---
+
 ## 2026-11-07 — La familia charla y juega 🗨️🎲
 
 **Que hicimos:** Pitri y Flufi ahora hacen muchas mas cosas juntos. Cada tanto **charlan**: uno pregunta "¿Como estas?" en su pantalla y el otro le contesta en la suya, por turnos. Tambien **juegan juntos** (los dos se marean, o se ponen los lentes, a la vez). Si uno llora, el otro lo **consuela** y le manda un beso. Cuando el sensor de Pitri ve a alguien, Flufi tambien saluda; cuando a Pitri le llega un mensaje, Flufi avisa; y cuando Pitri se duerme, a Flufi le da sueño. Ademas se cuentan cosas: Flufi le pasa a Pitri el tiempo de afuera y Pitri le pasa a Flufi la humedad. En el menu, **Familia** deja elegir a alguien y mandarle un beso, hacerle cosquillas, convidarle algo, charlar o jugar.

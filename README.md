@@ -1,7 +1,7 @@
 # 🩷 Flufi
 
 **Flufi es la compañera de Pitri.** Tiene una carita en una pantalla a color, con ojitos
-que parpadean, pestañas, **rulos rubios** y **labios rojos de diva** 💋.
+que parpadean, pestañas, **rulos rubios** con un **moño rosa** 🎀 en la frente y **labios rojos de diva** 💋.
 
 La armamos entre Sofia y su papa, de a poquito, como hicimos con Pitri.
 
